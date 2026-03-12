@@ -1,0 +1,1850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>R7 Design System & MUI Migration &mdash; Rebecca Havens Gore</title>
+    <meta name="description" content="Case study: Scaling a unified, accessible UI foundation for a multi-product security platform">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <script>!function(){try{var t=localStorage.getItem('theme')||'auto';var a=t==='auto'?(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):t;document.documentElement.setAttribute('data-theme',a)}catch(e){}}();</script>
+    <style>
+        /* Importing all styles from the main portfolio */
+        :root {
+            --grid-columns: 12;
+            --grid-gutter: 80px;
+            --grid-margin: 120px;
+            --baseline: 8px;
+            --font-display: 'Playfair Display', serif;
+            --font-body: 'IBM Plex Sans', sans-serif;
+            --type-h1: 56px;
+            --type-h2: 36px;
+            --type-h3: 28px;
+            --type-body: 18px;
+            --type-small: 14px;
+            --color-bg-primary: #FAFAFA;
+            --color-bg-secondary: #FFFFFF;
+            --color-bg-tertiary: #F0F0F0;
+            --color-text-primary: #1A1A1A;
+            --color-text-secondary: #4A4A4A;
+            --color-text-tertiary: #6A6A6A;
+            --color-accent: #FF6B2B;
+            --color-accent-hover: #E85A1F;
+            --color-border: rgba(0, 0, 0, 0.08);
+            --color-shadow: rgba(0, 0, 0, 0.06);
+            --color-overlay: rgba(0, 0, 0, 0.7);
+            --transition-fast: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-base: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 600ms cubic-bezier(0.4, 0, 0.2, 1);
+            --space-xs: 8px;
+            --space-sm: 16px;
+            --space-md: 24px;
+            --space-lg: 48px;
+            --space-xl: 80px;
+            --space-2xl: 120px;
+            --shadow-sm: 0 2px 8px var(--color-shadow);
+            --shadow-md: 0 4px 16px var(--color-shadow);
+            --shadow-lg: 0 8px 24px var(--color-shadow);
+            --focus-color: var(--color-accent);
+            --focus-width: 3px;
+            --focus-offset: 2px;
+        }
+        
+        [data-theme="dark"] {
+            --color-bg-primary: #0F0F0F;
+            --color-bg-secondary: #1A1A1A;
+            --color-bg-tertiary: #252525;
+            --color-text-primary: #F5F5F5;
+            --color-text-secondary: #B8B8B8;
+            --color-text-tertiary: #888888;
+            --color-border: rgba(255, 255, 255, 0.12);
+            --color-shadow: rgba(0, 0, 0, 0.3);
+            --color-overlay: rgba(0, 0, 0, 0.85);
+        }
+        
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: var(--font-body);
+            font-size: var(--type-body);
+            line-height: 1.7;
+            color: var(--color-text-primary);
+            background: var(--color-bg-primary);
+            transition: background-color var(--transition-base), color var(--transition-base);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        :focus-visible {
+            outline: var(--focus-width) solid var(--focus-color);
+            outline-offset: var(--focus-offset);
+            border-radius: 2px;
+        }
+        
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--color-bg-secondary);
+            border-bottom: 1px solid var(--color-border);
+            z-index: 1000;
+            padding: var(--space-md) var(--grid-margin);
+            transition: all var(--transition-base);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        .header.scrolled {
+            background: rgba(250, 250, 250, 0.8);
+            box-shadow: 0 4px 24px rgba(255, 107, 43, 0.1);
+        }
+        
+        [data-theme="dark"] .header.scrolled {
+            background: rgba(26, 26, 26, 0.8);
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--color-accent) 0%, #FF8C5C 25%, #6B46FF 50%, #2BBFFF 75%, var(--color-accent) 100%);
+            background-size: 200% 100%;
+            opacity: 0;
+            transition: opacity var(--transition-base);
+            animation: gradientFlow 4s linear infinite;
+        }
+        
+        .header.scrolled::before {
+            opacity: 1;
+        }
+        
+        @keyframes gradientFlow {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+        
+        .header__container {
+            max-width: 1440px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header__logo {
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color var(--transition-fast);
+        }
+        
+        .back-link:hover {
+            color: var(--color-accent);
+        }
+        
+        .back-link::before {
+            content: '\2190';
+            font-size: 20px;
+        }
+        
+        /* Case Study Hero */
+        .case-hero {
+            min-height: 70vh;
+            background: linear-gradient(135deg, #FF6B2B 0%, #FF8C5C 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding-top: 100px;
+        }
+        
+        .case-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+        
+        .case-hero__content {
+            max-width: 900px;
+            text-align: center;
+            padding: var(--space-2xl) var(--space-lg);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .case-hero__eyebrow {
+            font-size: var(--type-small);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+            margin-bottom: var(--space-md);
+        }
+        
+        .case-hero__title {
+            font-family: var(--font-display);
+            font-size: clamp(36px, 6vw, 52px);
+            font-weight: 900;
+            color: white;
+            margin-bottom: var(--space-md);
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+        
+        .case-hero__subtitle {
+            font-size: 22px;
+            color: rgba(255, 255, 255, 0.95);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+        
+        .case-hero__tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-top: var(--space-lg);
+        }
+        
+        .case-hero__tag {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Meta Section */
+        .case-meta {
+            background: var(--color-bg-secondary);
+            padding: var(--space-xl) var(--grid-margin);
+            border-bottom: 1px solid var(--color-border);
+        }
+        
+        .case-meta__container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-lg);
+        }
+        
+        .meta-item {
+            padding: var(--space-md);
+            background: var(--color-bg-primary);
+            border-radius: 12px;
+            border: 1px solid var(--color-border);
+        }
+        
+        .meta-item__label {
+            font-size: var(--type-small);
+            color: var(--color-text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .meta-item__value {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+        
+        /* Content Section */
+        .case-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: var(--space-2xl) var(--space-lg);
+        }
+        
+        .case-section {
+            margin-bottom: var(--space-2xl);
+        }
+        
+        .case-section__title {
+            font-family: var(--font-display);
+            font-size: var(--type-h2);
+            font-weight: 700;
+            margin-bottom: var(--space-md);
+            color: var(--color-text-primary);
+            position: relative;
+            display: inline-block;
+        }
+        
+        .case-section__title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--color-accent), #FF8C5C);
+            border-radius: 2px;
+        }
+        
+        .case-section p {
+            margin-bottom: var(--space-md);
+            line-height: 1.8;
+            color: var(--color-text-secondary);
+        }
+        
+        .case-section ul {
+            list-style: none;
+            padding-left: 0;
+            margin-bottom: var(--space-md);
+        }
+        
+        .case-section ul li {
+            margin-bottom: var(--space-sm);
+            padding-left: 28px;
+            position: relative;
+            line-height: 1.7;
+            color: var(--color-text-secondary);
+        }
+        
+        .case-section ul li::before {
+            content: '\25B8';
+            position: absolute;
+            left: 0;
+            color: var(--color-accent);
+            font-weight: bold;
+        }
+        
+        .case-section h3 {
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 700;
+            margin-top: var(--space-lg);
+            margin-bottom: var(--space-md);
+            color: var(--color-text-primary);
+        }
+        
+        /* Impact Section */
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-lg);
+            margin-top: var(--space-xl);
+        }
+        
+        .impact-card {
+            padding: var(--space-lg);
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .impact-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--color-accent), #FF8C5C);
+        }
+        
+        .impact-card__icon {
+            font-size: 32px;
+            margin-bottom: var(--space-sm);
+        }
+        
+        .impact-card__title {
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: var(--space-sm);
+            color: var(--color-text-primary);
+        }
+        
+        .impact-card__value {
+            font-family: var(--font-display);
+            font-size: 36px;
+            font-weight: 900;
+            color: var(--color-accent);
+            margin-bottom: 8px;
+            line-height: 1;
+        }
+        
+        .impact-card__description {
+            font-size: 16px;
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+        }
+        
+        /* Quote Block */
+        .quote-block {
+            margin: var(--space-xl) 0;
+            padding: var(--space-lg);
+            background: var(--color-bg-tertiary);
+            border-left: 4px solid var(--color-accent);
+            border-radius: 8px;
+        }
+        
+        .quote-block__text {
+            font-size: 20px;
+            font-style: italic;
+            color: var(--color-text-primary);
+            line-height: 1.6;
+        }
+        
+        /* Navigation Footer */
+        .case-nav {
+            background: var(--color-bg-secondary);
+            border-top: 1px solid var(--color-border);
+            padding: var(--space-xl) var(--grid-margin);
+            margin-top: var(--space-2xl);
+        }
+        
+        .case-nav__container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: var(--space-lg);
+        }
+        
+        .case-nav__link {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 32px;
+            background: var(--color-accent);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all var(--transition-fast);
+        }
+        
+        .case-nav__link:hover {
+            background: var(--color-accent-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            :root {
+                --grid-margin: 32px;
+                --type-h1: 42px;
+                --type-h2: 28px;
+            }
+            
+            .case-meta__container {
+                grid-template-columns: 1fr;
+            }
+            
+            .impact-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .case-nav__container {
+                flex-direction: column;
+            }
+        }
+    
+        /* == High-contrast theme == */
+        [data-theme="high-contrast"] {
+            --color-bg-primary: #000;
+            --color-bg-secondary: #000;
+            --color-bg-tertiary: #1A1A1A;
+            --color-text-primary: #FFF;
+            --color-text-secondary: #EEE;
+            --color-text-tertiary: #CCC;
+            --color-accent: #FFD700;
+            --color-accent-hover: #FFC700;
+            --color-border: rgba(255,255,255,0.5);
+            --color-shadow: rgba(0,0,0,0.5);
+        }
+        /* == scroll-behavior reduced-motion == */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { scroll-behavior: auto !important; }
+        }
+        /* == Skip link == */
+        .skip-link {
+            position: absolute; top: -40px; left: 16px;
+            background: var(--color-bg-secondary); color: var(--color-text-primary);
+            padding: 8px 16px; border-radius: 6px; text-decoration: none;
+            font-weight: 600; border: 2px solid var(--color-accent); z-index: 9999;
+            transition: top 200ms;
+        }
+        .skip-link:focus { top: 16px; outline: 3px solid var(--color-accent); outline-offset: 3px; }
+        #case-main { scroll-margin-top: 100px; }
+        /* == Theme switcher == */
+        .header__nav { display: flex; align-items: center; gap: 16px; }
+        .header__container { display: flex; justify-content: space-between; align-items: center; max-width: 1440px; margin: 0 auto; }
+        .theme-controls {
+            display: flex; align-items: center;
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(0,0,0,0.1); border-radius: 12px; padding: 4px;
+        }
+        .theme-btn {
+            background: transparent; border: none; padding: 7px 11px; border-radius: 8px;
+            cursor: pointer; color: var(--color-text-primary); font-size: 12px; font-weight: 600;
+            transition: all 200ms ease; display: flex; align-items: center; gap: 5px;
+            white-space: nowrap; font-family: inherit;
+        }
+        .theme-btn svg { width: 15px; height: 15px; fill: currentColor; }
+        .theme-btn:hover { color: var(--color-accent); }
+        .theme-btn:focus-visible { outline: 3px solid var(--color-accent); outline-offset: 2px; border-radius: 6px; }
+        .theme-btn.active { background: rgba(255,255,255,0.22); color: var(--color-accent); box-shadow: 0 2px 8px rgba(255,107,43,0.2); }
+        [data-theme="dark"] .theme-controls { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); }
+        [data-theme="dark"] .theme-btn { color: #bbb; }
+        [data-theme="dark"] .theme-btn.active { background: rgba(255,255,255,0.1); color: var(--color-accent); }
+        [data-theme="high-contrast"] .header { background: #000 !important; backdrop-filter: none !important; border-bottom: 2px solid #FFF !important; }
+        [data-theme="high-contrast"] .header__logo { color: #FFF !important; }
+        [data-theme="high-contrast"] .back-link { color: #FFD700 !important; }
+        [data-theme="high-contrast"] .theme-controls { background: #111; border: 2px solid #FFF; box-shadow: none; backdrop-filter: none; }
+        [data-theme="high-contrast"] .theme-btn { color: #EEE; border: 1px solid #555; border-radius: 6px; }
+        [data-theme="high-contrast"] .theme-btn:hover { border-color: #FFD700; color: #FFD700; }
+        [data-theme="high-contrast"] .theme-btn.active { background: #FFD700; color: #000; border-color: #FFD700; }
+        /* Improve theme switcher contrast in LIGHT theme */
+:root:not([data-theme="dark"]):not([data-theme="high-contrast"]) .theme-controls {
+  background: rgba(0, 0, 0, 0.04);           /* darker glass */
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+:root:not([data-theme="dark"]):not([data-theme="high-contrast"]) .theme-btn {
+  color: var(--color-text-primary);          /* stronger label color */
+  opacity: 0.78;                              /* inactive state */
+}
+
+:root:not([data-theme="dark"]):not([data-theme="high-contrast"]) .theme-btn:hover {
+  opacity: 1;
+}
+
+:root:not([data-theme="dark"]):not([data-theme="high-contrast"]) .theme-btn.active {
+  background: rgba(0, 0, 0, 0.08);           /* visible active pill */
+  color: var(--color-text-primary);
+  opacity: 1;
+  box-shadow: none;
+}/* Theme dropdown (medium screens) */
+        .theme-dropdown { display: none; position: relative; }
+        .theme-dropdown-button {
+            background: rgba(255,255,255,0.12); backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.2); border-radius: 10px;
+            padding: 7px 12px; cursor: pointer; color: var(--color-text-secondary);
+            font-size: 12px; font-weight: 600; display: flex; align-items: center;
+            gap: 6px; font-family: inherit; transition: all 200ms ease;
+        }
+        .theme-dropdown-button svg { width: 15px; height: 15px; fill: currentColor; }
+        .theme-dropdown-button:focus-visible { outline: 3px solid var(--color-accent); outline-offset: 2px; }
+        .theme-dropdown-menu {
+            display: none; position: absolute; top: calc(100% + 8px); right: 0;
+            background: var(--color-bg-secondary); border: 1px solid var(--color-border);
+            border-radius: 12px; padding: 6px; min-width: 160px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15); z-index: 1001;
+        }
+        .theme-dropdown-menu.open { display: block; }
+        .theme-dropdown-item {
+            display: flex; align-items: center; gap: 8px; padding: 8px 10px;
+            border-radius: 8px; cursor: pointer; color: var(--color-text-secondary);
+            font-size: 13px; font-weight: 600; border: none; background: transparent;
+            width: 100%; text-align: left; font-family: inherit; transition: all 150ms ease;
+        }
+        .theme-dropdown-item svg { width: 15px; height: 15px; fill: currentColor; }
+        .theme-dropdown-item:hover { background: rgba(255,107,43,0.1); color: var(--color-accent); }
+        .theme-dropdown-item.active { color: var(--color-accent); background: rgba(255,107,43,0.08); }
+        .theme-dropdown-item:focus-visible { outline: 3px solid var(--color-accent); outline-offset: 2px; }
+        [data-theme="high-contrast"] .theme-dropdown-button { background: #111; border: 2px solid #FFF; color: #EEE; backdrop-filter: none; }
+        [data-theme="high-contrast"] .theme-dropdown-menu { background: #000; border: 2px solid #FFF; }
+        [data-theme="high-contrast"] .theme-dropdown-item { color: #EEE; }
+        [data-theme="high-contrast"] .theme-dropdown-item:hover { color: #FFD700; background: #1a1a1a; }
+        [data-theme="high-contrast"] .theme-dropdown-item.active { color: #FFD700; background: #2a1a00; }
+        @media (max-width: 860px) { .theme-controls { display: none; } .theme-dropdown { display: block; } }
+        /* High-contrast content overrides */
+        [data-theme="high-contrast"] .case-section__title::after { background: #FFD700 !important; }
+        [data-theme="high-contrast"] .impact-card__value { color: #FFD700; }
+        [data-theme="high-contrast"] .quote-block { border-left-color: #FFD700; }
+:root:not([data-theme="dark"]):not([data-theme="high-contrast"]) .theme-dropdown-button {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: var(--color-text-primary);
+}
+        /* ─── Mini Table of Contents ─── */
+        .case-toc {
+            position: fixed;
+            top: 50%;
+            right: 24px;
+            transform: translateY(-50%);
+            z-index: 200;
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            padding: 16px 12px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+            width: 172px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 250ms ease;
+        }
+        .case-toc.visible { opacity: 1; pointer-events: auto; }
+        .case-toc__label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--color-text-tertiary);
+            font-weight: 600;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--color-border);
+        }
+        .case-toc__list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 2px; }
+        .case-toc__link {
+            display: block;
+            font-size: 12px;
+            line-height: 1.4;
+            color: var(--color-text-tertiary);
+            text-decoration: none;
+            padding: 5px 8px;
+            border-radius: 6px;
+            border-left: 2px solid transparent;
+            transition: color 150ms ease, background 150ms ease, border-color 150ms ease;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .case-toc__link:hover { color: var(--color-text-primary); background: var(--color-bg-tertiary); }
+        .case-toc__link.toc-active { color: var(--color-accent); border-left-color: var(--color-accent); font-weight: 600; }
+        .case-toc__link[data-priority="high"].toc-active { color: var(--color-accent); font-weight: 600; background: rgba(255,107,43,0.08); }
+        @media (max-width: 1280px) { .case-toc { display: none; } }
+        [data-theme="high-contrast"] .case-nav__link { background: #FFD700; color: #000; }
+        [data-theme="high-contrast"] .case-nav__link:hover { background: #FFC700; }
+    
+        /* == FIX: dark/HC header backgrounds == */
+        [data-theme="dark"] .header {
+            background: rgba(15, 15, 15, 0.88) !important;
+            border-bottom-color: rgba(255,255,255,0.1) !important;
+        }
+        [data-theme="dark"] .header.scrolled {
+            background: rgba(10, 10, 10, 0.95) !important;
+        }
+        [data-theme="dark"] .header__logo { color: #F5F5F5 !important; }
+        [data-theme="dark"] .back-link { color: #B8B8B8 !important; }
+        [data-theme="dark"] .back-link:hover { color: var(--color-accent) !important; }
+
+        /* Image placeholder */
+        .img-placeholder {
+            width: 100%;
+            min-height: 420px;
+            background: linear-gradient(135deg, var(--color-accent) 0%, #6B46FF 60%, #FF2E93 100%);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .img-placeholder::before {
+            content: 'Portfolio Image';
+            color: rgba(255,255,255,0.4);
+            font-size: 13px;
+            font-family: var(--font-body);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            font-weight: 600;
+            border: 2px dashed rgba(255,255,255,0.3);
+            padding: 32px 48px;
+            border-radius: 8px;
+        }
+        .img-placeholder__img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: center;
+        }
+
+        /* ─── Case Study Image Blocks ─── */
+        /*
+         * Images layer on top of the gradient background.
+         * For transparent/isometric PNGs the gradient shows through;
+         * for full-bleed product screenshots the image fills the frame.
+         * The gradient colour uses --color-accent so it shifts with theme.
+         */
+        .cs-image-block {
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--color-accent) 0%, #6B46FF 55%, #FF2E93 100%);
+            display: block;
+            margin: 0;
+        }
+
+        .cs-image-block picture {
+            display: block;
+            width: 100%;
+            background: rgba(0,0,0,0.10);
+        }
+
+        .cs-image-block img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .cs-image-block figcaption {
+            padding: 10px 24px 14px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.65);
+            text-align: center;
+            font-style: italic;
+            letter-spacing: 0.02em;
+            background: rgba(0, 0, 0, 0.12);
+        }
+
+        /* Side-by-side pair (Release & Iteration) */
+        .cs-image-pair {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        @media (max-width: 640px) {
+            .cs-image-pair { grid-template-columns: 1fr; }
+        }
+
+        /*
+         * Theme-aware image variants
+         * CL = Colour Light — shown in light and auto (light system) themes
+         * CD = Colour Dark  — shown in dark and high-contrast themes
+         */
+        .cs-img--dark  { display: none; }
+        .cs-img--light { display: block; }
+
+        [data-theme="dark"] .cs-img--dark  { display: block; }
+        [data-theme="dark"] .cs-img--light { display: none; }
+
+        [data-theme="high-contrast"] .cs-img--dark  { display: block; }
+        [data-theme="high-contrast"] .cs-img--light { display: none; }
+
+        /* Outcomes Gallery */
+        .outcomes-gallery {
+            padding: 80px var(--grid-margin, 120px);
+            background: var(--color-bg-secondary);
+        }
+        .outcomes-gallery__header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+        .outcomes-gallery__header .case-section__title {
+            margin-bottom: 0;
+        }
+        .outcomes-theme-switcher {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .outcomes-theme-btn {
+            font-family: var(--font-body);
+            font-size: 13px;
+            font-weight: 500;
+            padding: 6px 14px;
+            border: 1.5px solid var(--color-border);
+            border-radius: 20px;
+            background: transparent;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            transition: all 150ms ease;
+            white-space: nowrap;
+        }
+        .outcomes-theme-btn:hover {
+            border-color: var(--color-accent);
+            color: var(--color-accent);
+        }
+        .outcomes-theme-btn.active {
+            background: var(--color-accent);
+            border-color: var(--color-accent);
+            color: #fff;
+        }
+        .outcomes-arc {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 24px 0 64px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .outcomes-arc[hidden] { display: none; }
+        .outcomes-arc__item {
+            flex: 0 0 auto;
+            width: clamp(100px, 11vw, 180px);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.14);
+            transition: transform 300ms cubic-bezier(0.16,1,0.3,1), box-shadow 300ms ease, z-index 0s;
+            position: relative;
+            cursor: pointer;
+        }
+        /* Arc rotation — 8 items */
+        .outcomes-arc__item:nth-child(1)  { transform: rotate(-7deg)   translateY(28px); }
+        .outcomes-arc__item:nth-child(2)  { transform: rotate(-5deg)   translateY(16px); }
+        .outcomes-arc__item:nth-child(3)  { transform: rotate(-3deg)   translateY(7px);  }
+        .outcomes-arc__item:nth-child(4)  { transform: rotate(-1deg)   translateY(2px);  }
+        .outcomes-arc__item:nth-child(5)  { transform: rotate(1deg)    translateY(2px);  }
+        .outcomes-arc__item:nth-child(6)  { transform: rotate(3deg)    translateY(7px);  }
+        .outcomes-arc__item:nth-child(7)  { transform: rotate(5deg)    translateY(16px); }
+        .outcomes-arc__item:nth-child(8)  { transform: rotate(7deg)    translateY(28px); }
+        /* Extra items (9th = CL-1 bonus) */
+        .outcomes-arc__item:nth-child(9)  { transform: rotate(8deg)    translateY(36px); }
+        .outcomes-arc__item:hover {
+            transform: scale(1.55) rotate(0deg) translateY(-18px) !important;
+            z-index: 20;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.28);
+        }
+        .outcomes-arc__item img {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 0;
+        }
+        @media (max-width: 767px) {
+            .outcomes-gallery {
+                padding: 48px 24px;
+            }
+            .outcomes-gallery__header {
+                flex-direction: column;
+            }
+            .outcomes-arc {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 0;
+                gap: 16px;
+            }
+            .outcomes-arc__item {
+                width: 100% !important;
+                transform: none !important;
+            }
+            .outcomes-arc__item:hover {
+                transform: none !important;
+            }
+        }
+        </style>
+</head>
+<body>
+    <a href="#case-main" class="skip-link">Skip to main content</a>
+
+    <header class="header" role="banner">
+        <div class="header__container">
+            <a href="index.html" class="header__logo">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="28" height="28" aria-hidden="true" focusable="false" style="flex-shrink:0;border-radius:6px;"><defs><linearGradient id="logo-grad-rds" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#FF6B2B"/><stop offset="100%" stop-color="#6B46FF"/></linearGradient></defs><rect width="32" height="32" rx="7" fill="url(#logo-grad-rds)"/><text x="16" y="22" text-anchor="middle" fill="#fff" font-family="Georgia,serif" font-weight="700" font-size="14" letter-spacing="-0.5">RHG</text></svg>
+                Rebecca Havens Gore
+            </a>
+            <nav class="header__nav" aria-label="Site navigation">
+                <div class="theme-controls" role="group" aria-label="Color theme">
+                    <button class="theme-btn" data-theme="auto" aria-label="Use system theme" aria-pressed="false"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4C12.82 3.04 12.42 3 12 3zm0-2c6.08 0 11 4.92 11 11s-4.92 11-11 11S1 18.08 1 12 5.92 1 12 1z"/></svg> Auto</button>
+                    <button class="theme-btn" data-theme="light" aria-label="Light theme" aria-pressed="false"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1z"/></svg> Light</button>
+                    <button class="theme-btn" data-theme="dark" aria-label="Dark theme" aria-pressed="false"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 2c-1.05 0-2.05.16-3 .46 4.06 1.27 7 5.06 7 9.54 0 4.48-2.94 8.27-7 9.54.95.3 1.95.46 3 .46 5.52 0 10-4.48 10-10S14.52 2 9 2z"/></svg> Dark</button>
+                    <button class="theme-btn" data-theme="high-contrast" aria-label="High contrast theme" aria-pressed="false"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93s3.05-7.44 7-7.93v15.86zm2-15.86c1.03.13 2 .45 2.87.93H13v-.93zM13 7h5.24c.25.31.48.65.68 1H13V7zm0 3h6.74c.08.33.15.66.19 1H13v-1zm0 9.93V19h2.87c-.87.48-1.84.8-2.87.93zM18.24 17H13v-1h5.92c-.2.35-.43.69-.68 1zm1.5-3H13v-1h6.93c-.04.34-.11.67-.19 1z"/></svg> Contrast</button>
+                </div>
+                <div class="theme-dropdown">
+                    <button class="theme-dropdown-button" aria-label="Theme selector" aria-expanded="false" aria-haspopup="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4C12.82 3.04 12.42 3 12 3zm0-2c6.08 0 11 4.92 11 11s-4.92 11-11 11S1 18.08 1 12 5.92 1 12 1z"/></svg><span class="theme-dropdown-label">Auto</span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" style="width:14px;height:14px;margin-left:auto"><path d="M7 10l5 5 5-5z"/></svg>
+                    </button>
+                    <div class="theme-dropdown-menu" role="menu">
+                        <button class="theme-dropdown-item" data-theme="auto" role="menuitem"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4C12.82 3.04 12.42 3 12 3zm0-2c6.08 0 11 4.92 11 11s-4.92 11-11 11S1 18.08 1 12 5.92 1 12 1z"/></svg> Auto</button>
+                        <button class="theme-dropdown-item" data-theme="light" role="menuitem"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1z"/></svg> Light</button>
+                        <button class="theme-dropdown-item" data-theme="dark" role="menuitem"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 2c-1.05 0-2.05.16-3 .46 4.06 1.27 7 5.06 7 9.54 0 4.48-2.94 8.27-7 9.54.95.3 1.95.46 3 .46 5.52 0 10-4.48 10-10S14.52 2 9 2z"/></svg> Dark</button>
+                        <button class="theme-dropdown-item" data-theme="high-contrast" role="menuitem"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93s3.05-7.44 7-7.93v15.86zm2-15.86c1.03.13 2 .45 2.87.93H13v-.93zM13 7h5.24c.25.31.48.65.68 1H13V7zm0 3h6.74c.08.33.15.66.19 1H13v-1zm0 9.93V19h2.87c-.87.48-1.84.8-2.87.93zM18.24 17H13v-1h5.92c-.2.35-.43.69-.68 1zm1.5-3H13v-1h6.93c-.04.34-.11.67-.19 1z"/></svg> Contrast</button>
+                    </div>
+                </div>
+                <a href="index.html#work" class="back-link">Back to Portfolio</a>
+            </nav>
+        </div>
+    </header>
+    
+    <main id="case-main">
+        <!-- Hero -->
+        <section class="case-hero">
+            <div class="case-hero__content">
+                <p class="case-hero__eyebrow">Case Study 01</p>
+                <h1 class="case-hero__title">Rapid7 Design System & MUI Migration</h1>
+                <p class="case-hero__subtitle">Scaling a unified, accessible UI foundation for a multi-product security platform</p>
+                <div class="case-hero__tags">
+                    <span class="case-hero__tag">Design Systems</span>
+                    <span class="case-hero__tag">MUI</span>
+                    <span class="case-hero__tag">Accessibility</span>
+                    <span class="case-hero__tag">Platform UX</span>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Meta -->
+        <section class="case-meta" aria-label="Project overview">
+            <div class="case-meta__container">
+                <div class="meta-item">
+                    <div class="meta-item__label">Role</div>
+                    <div class="meta-item__value">Principal Designer, Design Systems</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-item__label">Timeline</div>
+                    <div class="meta-item__value">18 Months</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-item__label">Team</div>
+                    <div class="meta-item__value">Cross-functional (Design, Engineering, A11y)</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-item__label">Impact</div>
+                    <div class="meta-item__value">80% Platform Coverage</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 01: Hero — Before &amp; After -->
+        <figure class="cs-image-block">
+            <picture>
+                <source type="image/avif"
+                    srcset="assets/images/case-studies/rds/DS-01-640w.avif 640w,
+                            assets/images/case-studies/rds/DS-01-960w.avif 960w,
+                            assets/images/case-studies/rds/DS-01-1280w.avif 1280w,
+                            assets/images/case-studies/rds/DS-01-1600w.avif 1600w,
+                            assets/images/case-studies/rds/DS-01-2000w.avif 2000w"
+                    sizes="100vw">
+                <source type="image/webp"
+                    srcset="assets/images/case-studies/rds/DS-01-640w.webp 640w,
+                            assets/images/case-studies/rds/DS-01-960w.webp 960w,
+                            assets/images/case-studies/rds/DS-01-1280w.webp 1280w,
+                            assets/images/case-studies/rds/DS-01-1600w.webp 1600w,
+                            assets/images/case-studies/rds/DS-01-2000w.webp 2000w"
+                    sizes="100vw">
+                <img src="assets/images/case-studies/rds/DS-01-1280w.png"
+                    srcset="assets/images/case-studies/rds/DS-01-640w.png 640w,
+                            assets/images/case-studies/rds/DS-01-960w.png 960w,
+                            assets/images/case-studies/rds/DS-01-1280w.png 1280w,
+                            assets/images/case-studies/rds/DS-01-1600w.png 1600w,
+                            assets/images/case-studies/rds/DS-01-2000w.png 2000w"
+                    sizes="100vw"
+                    alt="Six Rapid7 products before RDS: divergent dark interfaces with 17+ button variants and inconsistent spacing; right side shows the unified R7 Design System light interface"
+                    loading="eager"
+                    fetchpriority="high"
+                    decoding="async"
+                    width="1280"
+                    height="770">
+            </picture>
+            <figcaption>Before &amp; After &mdash; Fragmented product UIs unified under the R7 Design System</figcaption>
+        </figure>
+
+        <!-- Content: Background &amp; Research -->
+        <article class="case-content" aria-label="Background and research">
+            <section class="case-section">
+                <h2 class="case-section__title">Executive Summary</h2>
+                <p>Rapid7's multi-product platform struggled with fragmented UI patterns, divergent codebases, and inconsistent accessibility standards. I led the architectural direction, strategy, and rollout of the Rapid7 Design System (RDS) and MUI migration, partnering across design, engineering, product, and accessibility teams.</p>
+                <p>Together, we delivered a unified, scalable UI framework now powering all major products across the portfolio&mdash;improving efficiency, consistency, accessibility, and design maturity at scale.</p>
+            </section>
+            
+            <section class="case-section">
+                <h2 class="case-section__title">The Challenge</h2>
+                <p>Rapid7's product suite evolved through acquisition and parallel development, resulting in systemic fragmentation that hurt both user experience and engineering velocity:</p>
+                <ul>
+                    <li>17+ button variants across products</li>
+                    <li>6 different DataGrid implementations</li>
+                    <li>Inconsistent spacing, typography, and theming</li>
+                    <li>Little or no code&ndash;design parity</li>
+                    <li>No unified component specification or governance</li>
+                    <li>Accessibility audits failing across multiple product lines</li>
+                    <li>Multiple duplicate component libraries creating engineering inefficiencies</li>
+                    <li>Divergent UI patterns for core interactions</li>
+                </ul>
+            </section>
+            
+            <section class="case-section">
+                <h2 class="case-section__title">My Role</h2>
+                <p>I defined the system vision and architecture, built the governance and adoption model, and partnered closely with engineering to migrate to an enterprise-grade MUI implementation.</p>
+                
+                <h3>Key Responsibilities</h3>
+                <ul>
+                    <li>Design system strategy and vision</li>
+                    <li>Information architecture and component taxonomy</li>
+                    <li>Governance model and design ops processes</li>
+                    <li>Measurement frameworks and KPIs</li>
+                    <li>Stakeholder alignment and communication</li>
+                    <li>Foundations: theming, tokens, spacing, typography</li>
+                </ul>
+                
+                <h3>Collaborative Deliverables</h3>
+                <ul>
+                    <li>60+ fully accessible MUI components</li>
+                    <li>Platform templates and interaction patterns</li>
+                    <li>Comprehensive documentation and tooling</li>
+                    <li>Code library with engineering team</li>
+                    <li>Adoption rollout plans per product team</li>
+                </ul>
+            </section>
+            
+            <section class="case-section">
+                <h2 class="case-section__title">Constraints</h2>
+                <p>The project needed to balance multiple technical and organizational challenges:</p>
+                <ul>
+                    <li>Six product teams with different tech stacks</li>
+                    <li>Parallel product delivery could not be disrupted</li>
+                    <li>Required full WCAG 2.2 AA compliance</li>
+                    <li>Needed to support light/dark theming</li>
+                    <li>Must unify visual language across acquisitions</li>
+                    <li>Required measurable ROI to secure future investment</li>
+                </ul>
+            </section>
+        </article>
+
+        <!-- 02: Research & Discovery -->
+        <figure class="cs-image-block">
+            <picture>
+                <source type="image/avif"
+                    srcset="assets/images/case-studies/rds/DS-02-640w.avif 640w,
+                            assets/images/case-studies/rds/DS-02-960w.avif 960w,
+                            assets/images/case-studies/rds/DS-02-1280w.avif 1280w,
+                            assets/images/case-studies/rds/DS-02-1600w.avif 1600w,
+                            assets/images/case-studies/rds/DS-02-2000w.avif 2000w"
+                    sizes="100vw">
+                <source type="image/webp"
+                    srcset="assets/images/case-studies/rds/DS-02-640w.webp 640w,
+                            assets/images/case-studies/rds/DS-02-960w.webp 960w,
+                            assets/images/case-studies/rds/DS-02-1280w.webp 1280w,
+                            assets/images/case-studies/rds/DS-02-1600w.webp 1600w,
+                            assets/images/case-studies/rds/DS-02-2000w.webp 2000w"
+                    sizes="100vw">
+                <img src="assets/images/case-studies/rds/DS-02-1280w.png"
+                    srcset="assets/images/case-studies/rds/DS-02-640w.png 640w,
+                            assets/images/case-studies/rds/DS-02-960w.png 960w,
+                            assets/images/case-studies/rds/DS-02-1280w.png 1280w,
+                            assets/images/case-studies/rds/DS-02-1600w.png 1600w,
+                            assets/images/case-studies/rds/DS-02-2000w.png 2000w"
+                    sizes="100vw"
+                    alt="Research and discovery artifacts — component audit spreadsheets, product comparison matrices, and user research synthesis from across the Rapid7 platform"
+                    loading="lazy"
+                    decoding="async"
+                    width="1280"
+                    height="800">
+            </picture>
+            <figcaption>Research &amp; discovery &mdash; Foundational audit synthesizing findings across all six product teams</figcaption>
+        </figure>
+
+        <!-- Content: Research &amp; Discovery -->
+        <article class="case-content" aria-label="Research and discovery">
+            <section class="case-section">
+                <h2 class="case-section__title">Research & Discovery</h2>
+                <p>I executed a comprehensive foundational audit across all six products, analyzing components, patterns, and user workflows.</p>
+                
+                <h3>Component Inventory</h3>
+                <ul>
+                    <li>Buttons, form fields, and navigation patterns across all states</li>
+                    <li>Tables, filters, cards, metrics, and summary views</li>
+                    <li>Data visualization interactions</li>
+                </ul>
+                
+                <h3>Key Findings</h3>
+                <ul>
+                    <li>High divergence in structure and behavior across products</li>
+                    <li>Engineering teams re-implementing similar components</li>
+                    <li>Designers spending excessive time manually aligning patterns</li>
+                    <li>No shared documentation or specification model</li>
+                    <li>Accessibility issues caused by inconsistent semantic structure</li>
+                </ul>
+                
+                <h3>Business & User Insights</h3>
+                <ul>
+                    <li>Fragmentation raised onboarding time for new users</li>
+                    <li>Inconsistency made insights harder to interpret</li>
+                    <li>Teams lacked trust in shared UI patterns</li>
+                    <li>Engineers lacked clarity on what "done" looked like</li>
+                </ul>
+            </section>
+        </article>
+
+        <!-- 03: Strategy & Architecture -->
+        <figure class="cs-image-block">
+            <picture>
+                <source type="image/avif"
+                    srcset="assets/images/case-studies/rds/DS-03-640w.avif 640w,
+                            assets/images/case-studies/rds/DS-03-960w.avif 960w,
+                            assets/images/case-studies/rds/DS-03-1280w.avif 1280w,
+                            assets/images/case-studies/rds/DS-03-1600w.avif 1600w,
+                            assets/images/case-studies/rds/DS-03-2000w.avif 2000w"
+                    sizes="100vw">
+                <source type="image/webp"
+                    srcset="assets/images/case-studies/rds/DS-03-640w.webp 640w,
+                            assets/images/case-studies/rds/DS-03-960w.webp 960w,
+                            assets/images/case-studies/rds/DS-03-1280w.webp 1280w,
+                            assets/images/case-studies/rds/DS-03-1600w.webp 1600w,
+                            assets/images/case-studies/rds/DS-03-2000w.webp 2000w"
+                    sizes="100vw">
+                <img src="assets/images/case-studies/rds/DS-03-1280w.png"
+                    srcset="assets/images/case-studies/rds/DS-03-640w.png 640w,
+                            assets/images/case-studies/rds/DS-03-960w.png 960w,
+                            assets/images/case-studies/rds/DS-03-1280w.png 1280w,
+                            assets/images/case-studies/rds/DS-03-1600w.png 1600w,
+                            assets/images/case-studies/rds/DS-03-2000w.png 2000w"
+                    sizes="100vw"
+                    alt="Strategy and architecture diagram — three-layer RDS framework showing Foundations, Components, and Templates with governance model"
+                    loading="lazy"
+                    decoding="async"
+                    width="1280"
+                    height="800">
+            </picture>
+            <figcaption>Strategy &amp; architecture &mdash; The three-layer RDS framework and governance model</figcaption>
+        </figure>
+
+        <!-- Content: Strategy &amp; Architecture -->
+        <article class="case-content" aria-label="Strategy and architecture">
+            <section class="case-section">
+                <h2 class="case-section__title">Strategy & Architecture</h2>
+                <p>I architected RDS around three scalable layers that both design and engineering could rely on:</p>
+                
+                <h3>Layer 1 &mdash; Foundations</h3>
+                <ul>
+                    <li>Design tokens (color, spacing, typography, radii, motion)</li>
+                    <li>Light/dark theming system</li>
+                    <li>Grid and layout rules</li>
+                    <li>Accessibility standards</li>
+                </ul>
+                
+                <h3>Layer 2 &mdash; Components</h3>
+                <ul>
+                    <li>60+ fully documented UI components</li>
+                    <li>MUI-based implementations with Rapid7-specific overrides</li>
+                    <li>Component spec sheets (behavior, states, accessibility, API)</li>
+                </ul>
+                
+                <h3>Layer 3 &mdash; Templates & Standards</h3>
+                <ul>
+                    <li>Dashboard template</li>
+                    <li>Listing template</li>
+                    <li>Details template</li>
+                    <li>Form template</li>
+                    <li>UX Standards Pillars: Accessibility, Responsiveness, Usability, Governance</li>
+                </ul>
+            </section>
+        </article>
+
+        <!-- 04: Design & Implementation -->
+        <figure class="cs-image-block">
+            <picture>
+                <source type="image/avif"
+                    srcset="assets/images/case-studies/rds/DS-04-640w.avif 640w,
+                            assets/images/case-studies/rds/DS-04-960w.avif 960w,
+                            assets/images/case-studies/rds/DS-04-1280w.avif 1280w,
+                            assets/images/case-studies/rds/DS-04-1600w.avif 1600w,
+                            assets/images/case-studies/rds/DS-04-2000w.avif 2000w"
+                    sizes="100vw">
+                <source type="image/webp"
+                    srcset="assets/images/case-studies/rds/DS-04-640w.webp 640w,
+                            assets/images/case-studies/rds/DS-04-960w.webp 960w,
+                            assets/images/case-studies/rds/DS-04-1280w.webp 1280w,
+                            assets/images/case-studies/rds/DS-04-1600w.webp 1600w,
+                            assets/images/case-studies/rds/DS-04-2000w.webp 2000w"
+                    sizes="100vw">
+                <img src="assets/images/case-studies/rds/DS-04-1280w.png"
+                    srcset="assets/images/case-studies/rds/DS-04-640w.png 640w,
+                            assets/images/case-studies/rds/DS-04-960w.png 960w,
+                            assets/images/case-studies/rds/DS-04-1280w.png 1280w,
+                            assets/images/case-studies/rds/DS-04-1600w.png 1600w,
+                            assets/images/case-studies/rds/DS-04-2000w.png 2000w"
+                    sizes="100vw"
+                    alt="Design and implementation artifacts — component specifications, Figma libraries, and MUI theme overrides for the R7 Design System"
+                    loading="lazy"
+                    decoding="async"
+                    width="1280"
+                    height="800">
+            </picture>
+            <figcaption>Design &amp; implementation &mdash; Component spec sheets, Figma libraries, and MUI theme architecture</figcaption>
+        </figure>
+
+        <!-- Content: Design &amp; Implementation -->
+        <article class="case-content" aria-label="Design and implementation">
+            <section class="case-section">
+                <h2 class="case-section__title">Design & Implementation</h2>
+                
+                <h3>Component Design</h3>
+                <ul>
+                    <li>Created spec-driven Figma components</li>
+                    <li>Defined semantic structure and interaction states</li>
+                    <li>Introduced unified motion principles</li>
+                    <li>Standardized keyboard navigation patterns</li>
+                    <li>Designed flexible variants supporting edge cases</li>
+                </ul>
+                
+                <h3>Engineering Migration (MUI)</h3>
+                <ul>
+                    <li>Worked with engineering to define theme overrides</li>
+                    <li>Created design &rarr; code mapping model via Supernova</li>
+                    <li>Redefined component APIs to align with RDS usage</li>
+                    <li>Established release and versioning processes</li>
+                </ul>
+                
+                <h3>Documentation</h3>
+                <ul>
+                    <li>Component API documentation</li>
+                    <li>Implementation guides</li>
+                    <li>Accessibility checklists</li>
+                    <li>Theming and token documentation</li>
+                </ul>
+                
+                <h3>Governance</h3>
+                <ul>
+                    <li>Design Forum integration</li>
+                    <li>Proposal templates</li>
+                    <li>FOG-based evaluation (Facts, Opinions, Guesses)</li>
+                    <li>Quarterly audits</li>
+                </ul>
+            </section>
+        </article>
+
+        <!-- 05: Enablement -->
+        <figure class="cs-image-block">
+            <picture>
+                <source type="image/avif"
+                    srcset="assets/images/case-studies/rds/DS-05-640w.avif 640w,
+                            assets/images/case-studies/rds/DS-05-960w.avif 960w,
+                            assets/images/case-studies/rds/DS-05-1280w.avif 1280w,
+                            assets/images/case-studies/rds/DS-05-1600w.avif 1600w,
+                            assets/images/case-studies/rds/DS-05-2000w.avif 2000w"
+                    sizes="100vw">
+                <source type="image/webp"
+                    srcset="assets/images/case-studies/rds/DS-05-640w.webp 640w,
+                            assets/images/case-studies/rds/DS-05-960w.webp 960w,
+                            assets/images/case-studies/rds/DS-05-1280w.webp 1280w,
+                            assets/images/case-studies/rds/DS-05-1600w.webp 1600w,
+                            assets/images/case-studies/rds/DS-05-2000w.webp 2000w"
+                    sizes="100vw">
+                <img src="assets/images/case-studies/rds/DS-05-1280w.png"
+                    srcset="assets/images/case-studies/rds/DS-05-640w.png 640w,
+                            assets/images/case-studies/rds/DS-05-960w.png 960w,
+                            assets/images/case-studies/rds/DS-05-1280w.png 1280w,
+                            assets/images/case-studies/rds/DS-05-1600w.png 1600w,
+                            assets/images/case-studies/rds/DS-05-2000w.png 2000w"
+                    sizes="100vw"
+                    alt="Designer enablement materials — workshop guides, onboarding documentation, and design literacy curriculum built alongside the R7 Design System"
+                    loading="lazy"
+                    decoding="async"
+                    width="1280"
+                    height="800">
+            </picture>
+            <figcaption>Enablement &mdash; Workshop guides, onboarding documentation, and design literacy curriculum</figcaption>
+        </figure>
+
+        <!-- 06: Measurement Framework -->
+        <figure class="cs-image-block">
+            <picture>
+                <source type="image/avif"
+                    srcset="assets/images/case-studies/rds/DS-06-640w.avif 640w,
+                            assets/images/case-studies/rds/DS-06-960w.avif 960w,
+                            assets/images/case-studies/rds/DS-06-1280w.avif 1280w,
+                            assets/images/case-studies/rds/DS-06-1600w.avif 1600w,
+                            assets/images/case-studies/rds/DS-06-2000w.avif 2000w"
+                    sizes="100vw">
+                <source type="image/webp"
+                    srcset="assets/images/case-studies/rds/DS-06-640w.webp 640w,
+                            assets/images/case-studies/rds/DS-06-960w.webp 960w,
+                            assets/images/case-studies/rds/DS-06-1280w.webp 1280w,
+                            assets/images/case-studies/rds/DS-06-1600w.webp 1600w,
+                            assets/images/case-studies/rds/DS-06-2000w.webp 2000w"
+                    sizes="100vw">
+                <img src="assets/images/case-studies/rds/DS-06-1280w.png"
+                    srcset="assets/images/case-studies/rds/DS-06-640w.png 640w,
+                            assets/images/case-studies/rds/DS-06-960w.png 960w,
+                            assets/images/case-studies/rds/DS-06-1280w.png 1280w,
+                            assets/images/case-studies/rds/DS-06-1600w.png 1600w,
+                            assets/images/case-studies/rds/DS-06-2000w.png 2000w"
+                    sizes="100vw"
+                    alt="Measurement framework dashboard — KPI tracking across design velocity, component adoption rate, accessibility compliance, and UX sentiment scores"
+                    loading="lazy"
+                    decoding="async"
+                    width="1280"
+                    height="800">
+            </picture>
+            <figcaption>Measurement framework &mdash; KPIs tracking design velocity, adoption rate, accessibility, and team satisfaction</figcaption>
+        </figure>
+
+        <!-- Content: Measurement Framework -->
+        <article class="case-content" aria-label="Measurement framework">
+            <section class="case-section">
+                <h2 class="case-section__title">Measurement Framework</h2>
+                <p>I defined and implemented a comprehensive metrics framework measuring both internal and external impact:</p>
+
+                <h3>Internal Impact Metrics</h3>
+                <ul>
+                    <li>Design velocity</li>
+                    <li>Engineering velocity</li>
+                    <li>Component adoption rate</li>
+                    <li>Accessibility compliance</li>
+                    <li>UX designer satisfaction</li>
+                </ul>
+
+                <h3>External Impact Metrics</h3>
+                <ul>
+                    <li>Experience consistency</li>
+                    <li>Visual cohesion</li>
+                    <li>Reduced user confusion</li>
+                    <li>Improved product onboarding</li>
+                </ul>
+
+                <p>We tracked success week-over-week using Jira, Confluence analytics, and UX sentiment surveys.</p>
+            </section>
+        </article>
+
+        <!-- 07: Impact -->
+        <figure class="cs-image-block">
+            <picture>
+                <source type="image/avif"
+                    srcset="assets/images/case-studies/rds/DS-07-640w.avif 640w,
+                            assets/images/case-studies/rds/DS-07-960w.avif 960w,
+                            assets/images/case-studies/rds/DS-07-1280w.avif 1280w,
+                            assets/images/case-studies/rds/DS-07-1600w.avif 1600w,
+                            assets/images/case-studies/rds/DS-07-2000w.avif 2000w"
+                    sizes="100vw">
+                <source type="image/webp"
+                    srcset="assets/images/case-studies/rds/DS-07-640w.webp 640w,
+                            assets/images/case-studies/rds/DS-07-960w.webp 960w,
+                            assets/images/case-studies/rds/DS-07-1280w.webp 1280w,
+                            assets/images/case-studies/rds/DS-07-1600w.webp 1600w,
+                            assets/images/case-studies/rds/DS-07-2000w.webp 2000w"
+                    sizes="100vw">
+                <img src="assets/images/case-studies/rds/DS-07-1280w.png"
+                    srcset="assets/images/case-studies/rds/DS-07-640w.png 640w,
+                            assets/images/case-studies/rds/DS-07-960w.png 960w,
+                            assets/images/case-studies/rds/DS-07-1280w.png 1280w,
+                            assets/images/case-studies/rds/DS-07-1600w.png 1600w,
+                            assets/images/case-studies/rds/DS-07-2000w.png 2000w"
+                    sizes="100vw"
+                    alt="Impact summary — platform adoption metrics, engineering velocity gains, and accessibility compliance results across the Rapid7 product suite"
+                    loading="lazy"
+                    decoding="async"
+                    width="1280"
+                    height="800">
+            </picture>
+            <figcaption>Impact &mdash; 40% faster builds, 80% platform adoption, 100% WCAG 2.2 AA compliance</figcaption>
+        </figure>
+
+        <!-- Content: Impact -->
+        <article class="case-content" aria-label="Impact">
+            <section class="case-section">
+                <h2 class="case-section__title">Impact</h2>
+
+                <div class="impact-grid">
+                    <div class="impact-card">
+                        <div class="impact-card__icon">&#9889;</div>
+                        <div class="impact-card__title">Engineering Speed</div>
+                        <div class="impact-card__value">40%</div>
+                        <div class="impact-card__description">Faster build time for UI implementation</div>
+                    </div>
+
+                    <div class="impact-card">
+                        <div class="impact-card__icon">&#128202;</div>
+                        <div class="impact-card__title">Platform Coverage</div>
+                        <div class="impact-card__value">80%</div>
+                        <div class="impact-card__description">Achieved in just two quarters</div>
+                    </div>
+
+                    <div class="impact-card">
+                        <div class="impact-card__icon">&#128522;</div>
+                        <div class="impact-card__title">Designer Satisfaction</div>
+                        <div class="impact-card__value">25%</div>
+                        <div class="impact-card__description">Increase in team satisfaction scores</div>
+                    </div>
+
+                    <div class="impact-card">
+                        <div class="impact-card__icon">&#127919;</div>
+                        <div class="impact-card__title">UX Consistency</div>
+                        <div class="impact-card__value">50%</div>
+                        <div class="impact-card__description">Reduction in visual drift</div>
+                    </div>
+
+                    <div class="impact-card">
+                        <div class="impact-card__icon">&#9855;</div>
+                        <div class="impact-card__title">Accessibility</div>
+                        <div class="impact-card__value">100%</div>
+                        <div class="impact-card__description">WCAG 2.2 AA compliance across all components</div>
+                    </div>
+                </div>
+
+                <h3>Qualitative Impact</h3>
+                <ul>
+                    <li>Teams aligned around a shared UI language</li>
+                    <li>Easier onboarding for new designers and engineers</li>
+                    <li>Higher confidence in UI quality</li>
+                    <li>Reduced design and engineering friction</li>
+                </ul>
+
+                <h3>Organizational Impact</h3>
+                <ul>
+                    <li>Design system became required infrastructure</li>
+                    <li>Engineering used RDS as baseline for all UI work</li>
+                    <li>Platform UX maturity significantly increased</li>
+                    <li>Established foundation for future AI and automation work</li>
+                </ul>
+            </section>
+        </article>
+
+        <!-- 08: What I'd Do Next -->
+        <figure class="cs-image-block">
+            <picture>
+                <source type="image/avif"
+                    srcset="assets/images/case-studies/rds/DS-08-640w.avif 640w,
+                            assets/images/case-studies/rds/DS-08-960w.avif 960w,
+                            assets/images/case-studies/rds/DS-08-1280w.avif 1280w,
+                            assets/images/case-studies/rds/DS-08-1600w.avif 1600w,
+                            assets/images/case-studies/rds/DS-08-2000w.avif 2000w"
+                    sizes="100vw">
+                <source type="image/webp"
+                    srcset="assets/images/case-studies/rds/DS-08-640w.webp 640w,
+                            assets/images/case-studies/rds/DS-08-960w.webp 960w,
+                            assets/images/case-studies/rds/DS-08-1280w.webp 1280w,
+                            assets/images/case-studies/rds/DS-08-1600w.webp 1600w,
+                            assets/images/case-studies/rds/DS-08-2000w.webp 2000w"
+                    sizes="100vw">
+                <img src="assets/images/case-studies/rds/DS-08-1280w.png"
+                    srcset="assets/images/case-studies/rds/DS-08-640w.png 640w,
+                            assets/images/case-studies/rds/DS-08-960w.png 960w,
+                            assets/images/case-studies/rds/DS-08-1280w.png 1280w,
+                            assets/images/case-studies/rds/DS-08-1600w.png 1600w,
+                            assets/images/case-studies/rds/DS-08-2000w.png 2000w"
+                    sizes="100vw"
+                    alt="Future roadmap concepts — motion system, automated governance linting, AI-powered component recommendations, and usage analytics at the component level"
+                    loading="lazy"
+                    decoding="async"
+                    width="1280"
+                    height="800">
+            </picture>
+            <figcaption>What I&rsquo;d do next &mdash; Motion system, automated governance, AI-powered recommendations, and component analytics</figcaption>
+        </figure>
+
+        <!-- Content: What I'd Do Next -->
+        <article class="case-content" aria-label="What I'd do next">
+            <section class="case-section">
+                <h2 class="case-section__title">What I'd Do Next</h2>
+                <p>Building on this foundation, future enhancements would focus on:</p>
+                <ul>
+                    <li>Expand into motion and microcopy systems</li>
+                    <li>Add automated accessibility and governance linting</li>
+                    <li>Deepen AI integrations for component recommendations</li>
+                    <li>Introduce usage analytics at the component level</li>
+                    <li>Create personalized onboarding paths based on product usage</li>
+                </ul>
+            </section>
+        </article>
+        
+        <!-- Outcomes Gallery -->
+        <section class="outcomes-gallery" aria-label="Outcomes gallery">
+            <div class="outcomes-gallery__header">
+                <h2 class="case-section__title">Outcomes</h2>
+                <div class="outcomes-theme-switcher" role="group" aria-label="Select theme to preview">
+                    <button class="outcomes-theme-btn active" data-gallery="OL">Original Light</button>
+                    <button class="outcomes-theme-btn" data-gallery="OD">Original Dark</button>
+                    <button class="outcomes-theme-btn" data-gallery="CL">Callisto Light</button>
+                    <button class="outcomes-theme-btn" data-gallery="CD">Callisto Dark</button>
+                </div>
+            </div>
+
+            <!-- Original Light -->
+            <div class="outcomes-arc" data-gallery-theme="OL" role="list" aria-label="Original Light theme outcomes">
+                <div class="outcomes-arc__item" role="listitem">
+                    <picture>
+                        <source type="image/avif" srcset="assets/images/case-studies/rds/Outcome-01-OL-640w.avif 640w, assets/images/case-studies/rds/Outcome-01-OL-960w.avif 960w, assets/images/case-studies/rds/Outcome-01-OL-1280w.avif 1280w" sizes="12vw">
+                        <source type="image/webp" srcset="assets/images/case-studies/rds/Outcome-01-OL-640w.webp 640w, assets/images/case-studies/rds/Outcome-01-OL-960w.webp 960w, assets/images/case-studies/rds/Outcome-01-OL-1280w.webp 1280w" sizes="12vw">
+                        <img src="assets/images/case-studies/rds/Outcome-01-OL-960w.png" alt="Outcome 1 — Original Light theme" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+                <div class="outcomes-arc__item" role="listitem">
+                    <picture>
+                        <source type="image/avif" srcset="assets/images/case-studies/rds/Outcome-02-OL-640w.avif 640w, assets/images/case-studies/rds/Outcome-02-OL-960w.avif 960w, assets/images/case-studies/rds/Outcome-02-OL-1280w.avif 1280w" sizes="12vw">
+                        <source type="image/webp" srcset="assets/images/case-studies/rds/Outcome-02-OL-640w.webp 640w, assets/images/case-studies/rds/Outcome-02-OL-960w.webp 960w, assets/images/case-studies/rds/Outcome-02-OL-1280w.webp 1280w" sizes="12vw">
+                        <img src="assets/images/case-studies/rds/Outcome-02-OL-960w.png" alt="Outcome 2 — Original Light theme" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+                <div class="outcomes-arc__item" role="listitem">
+                    <picture>
+                        <source type="image/avif" srcset="assets/images/case-studies/rds/Outcome-03-OL-640w.avif 640w, assets/images/case-studies/rds/Outcome-03-OL-960w.avif 960w, assets/images/case-studies/rds/Outcome-03-OL-1280w.avif 1280w" sizes="12vw">
+                        <source type="image/webp" srcset="assets/images/case-studies/rds/Outcome-03-OL-640w.webp 640w, assets/images/case-studies/rds/Outcome-03-OL-960w.webp 960w, assets/images/case-studies/rds/Outcome-03-OL-1280w.webp 1280w" sizes="12vw">
+                        <img src="assets/images/case-studies/rds/Outcome-03-OL-960w.png" alt="Outcome 3 — Original Light theme" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+                <div class="outcomes-arc__item" role="listitem">
+                    <picture>
+                        <source type="image/avif" srcset="assets/images/case-studies/rds/Outcome-04-OL-640w.avif 640w, assets/images/case-studies/rds/Outcome-04-OL-960w.avif 960w, assets/images/case-studies/rds/Outcome-04-OL-1280w.avif 1280w" sizes="12vw">
+                        <source type="image/webp" srcset="assets/images/case-studies/rds/Outcome-04-OL-640w.webp 640w, assets/images/case-studies/rds/Outcome-04-OL-960w.webp 960w, assets/images/case-studies/rds/Outcome-04-OL-1280w.webp 1280w" sizes="12vw">
+                        <img src="assets/images/case-studies/rds/Outcome-04-OL-960w.png" alt="Outcome 4 — Original Light theme" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+                <div class="outcomes-arc__item" role="listitem">
+                    <picture>
+                        <source type="image/avif" srcset="assets/images/case-studies/rds/Outcome-05-OL-640w.avif 640w, assets/images/case-studies/rds/Outcome-05-OL-960w.avif 960w, assets/images/case-studies/rds/Outcome-05-OL-1280w.avif 1280w" sizes="12vw">
+                        <source type="image/webp" srcset="assets/images/case-studies/rds/Outcome-05-OL-640w.webp 640w, assets/images/case-studies/rds/Outcome-05-OL-960w.webp 960w, assets/images/case-studies/rds/Outcome-05-OL-1280w.webp 1280w" sizes="12vw">
+                        <img src="assets/images/case-studies/rds/Outcome-05-OL-960w.png" alt="Outcome 5 — Original Light theme" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+                <div class="outcomes-arc__item" role="listitem">
+                    <picture>
+                        <source type="image/avif" srcset="assets/images/case-studies/rds/Outcome-06-OL-640w.avif 640w, assets/images/case-studies/rds/Outcome-06-OL-960w.avif 960w, assets/images/case-studies/rds/Outcome-06-OL-1280w.avif 1280w" sizes="12vw">
+                        <source type="image/webp" srcset="assets/images/case-studies/rds/Outcome-06-OL-640w.webp 640w, assets/images/case-studies/rds/Outcome-06-OL-960w.webp 960w, assets/images/case-studies/rds/Outcome-06-OL-1280w.webp 1280w" sizes="12vw">
+                        <img src="assets/images/case-studies/rds/Outcome-06-OL-960w.png" alt="Outcome 6 — Original Light theme" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+                <div class="outcomes-arc__item" role="listitem">
+                    <picture>
+                        <source type="image/avif" srcset="assets/images/case-studies/rds/Outcome-07-OL-640w.avif 640w, assets/images/case-studies/rds/Outcome-07-OL-960w.avif 960w, assets/images/case-studies/rds/Outcome-07-OL-1280w.avif 1280w" sizes="12vw">
+                        <source type="image/webp" srcset="assets/images/case-studies/rds/Outcome-07-OL-640w.webp 640w, assets/images/case-studies/rds/Outcome-07-OL-960w.webp 960w, assets/images/case-studies/rds/Outcome-07-OL-1280w.webp 1280w" sizes="12vw">
+                        <img src="assets/images/case-studies/rds/Outcome-07-OL-960w.png" alt="Outcome 7 — Original Light theme" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+                <div class="outcomes-arc__item" role="listitem">
+                    <picture>
+                        <source type="image/avif" srcset="assets/images/case-studies/rds/Outcome-08-OL-640w.avif 640w, assets/images/case-studies/rds/Outcome-08-OL-960w.avif 960w, assets/images/case-studies/rds/Outcome-08-OL-1280w.avif 1280w" sizes="12vw">
+                        <source type="image/webp" srcset="assets/images/case-studies/rds/Outcome-08-OL-640w.webp 640w, assets/images/case-studies/rds/Outcome-08-OL-960w.webp 960w, assets/images/case-studies/rds/Outcome-08-OL-1280w.webp 1280w" sizes="12vw">
+                        <img src="assets/images/case-studies/rds/Outcome-08-OL-960w.png" alt="Outcome 8 — Original Light theme" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+            </div>
+
+            <!-- Original Dark -->
+            <div class="outcomes-arc" data-gallery-theme="OD" hidden role="list" aria-label="Original Dark theme outcomes">
+                <div class="outcomes-arc__item" role="listitem">
+                    <picture>
+                        <source type="image/avif" srcset="assets/images/case-studies/rds/Outcome-02-OD-640w.avif 640w, assets/images/case-studies/rds/Outcome-02-OD-960w.avif 960w, assets/images/case-studies/rds/Outcome-02-OD-1280w.avif 1280w" sizes="12vw">
+                        <source type="image/webp" srcset="assets/images/case-studies/rds/Outcome-02-OD-640w.webp 640w, assets/images/case-studies/rds/Outcome-02-OD-960w.webp 960w, assets/images/case-studies/rds/Outcome-02-OD-1280w.webp 1280w" sizes="12vw">
+                        <img src="assets/images/case-studies/rds/Outcome-02-OD-960w.png" alt="Outcome 2 — Original Dark theme" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+                <div class="outcomes-arc__item" role="listitem">
+                    <picture>
+                        <source type="image/avif" srcset="assets/images/case-studies/rds/Outcome-03-OD-640w.avif 640w, assets/images/case-studies/rds/Outcome-03-OD-960w.avif 960w, assets/images/case-studies/rds/Outcome-03-OD-1280w.avif 1280w" sizes="12vw">
+                        <source type="image/webp" srcset="assets/images/case-studies/rds/Outcome-03-OD-640w.webp 640w, assets/images/case-studies/rds/Outcome-03-OD-960w.webp 960w, assets/images/case-studies/rds/Outcome-03-OD-1280w.webp 1280w" sizes="12vw">
+                        <img src="assets/images/case-studies/rds/Outcome-03-OD-960w.png" alt="Outcome 3 — Original Dark theme" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+                <div class="outcomes-arc__item" role="listitem">
+                    <picture>
+                        <source type="image/avif" srcset="assets/images/case-studies/rds/Outcome-04-OD-640w.avif 640w, assets/images/case-studies/rds/Outcome-04-OD-960w.avif 960w, assets/images/case-studies/rds/Outcome-04-OD-1280w.avif 1280w" sizes="12vw">
+                        <source type="image/webp" srcset="assets/images/case-studies/rds/Outcome-04-OD-640w.webp 640w, assets/images/case-studies/rds/Outcome-04-OD-960w.webp 960w, assets/images/case-studies/rds/Outcome-04-OD-1280w.webp 1280w" sizes="12vw">
+                        <img src="assets/images/case-studies/rds/Outcome-04-OD-960w.png" alt="Outcome 4 — Original Dark theme" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+                <div class="outcomes-arc__item" role="listitem">
+                    <picture>
+                        <source type="image/avif" srcset="assets/images/case-studies/rds/Outcome-05-OD-640w.avif 640w, assets/images/case-studies/rds/Outcome-05-OD-960w.avif 960w, assets/images/case-studies/rds/Outcome-05-OD-1280w.avif 1280w" sizes="12vw">
+                        <source type="image/webp" srcset="assets/images/case-studies/rds/Outcome-05-OD-640w.webp 640w, assets/images/case-studies/rds/Outcome-05-OD-960w.webp 960w, assets/images/case-studies/rds/Outcome-05-OD-1280w.webp 1280w" sizes="12vw">
+                        <img src="assets/images/case-studies/rds/Outcome-05-OD-960w.png" alt="Outcome 5 — Original Dark theme" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+                <div class="outcomes-arc__item" role="listitem">
+                    <picture>
+                        <source type="image/avif" srcset="assets/images/case-studies/rds/Outcome-06-OD-640w.avif 640w, assets/images/case-studies/rds/Outcome-06-OD-960w.avif 960w, assets/images/case-studies/rds/Outcome-06-OD-1280w.avif 1280w" sizes="12vw">
+                        <source type="image/webp" srcset="assets/images/case-studies/rds/Outcome-06-OD-640w.webp 640w, assets/images/case-studies/rds/Outcome-06-OD-960w.webp 960w, assets/images/case-studies/rds/Outcome-06-OD-1280w.webp 1280w" sizes="12vw">
+                        <img src="assets/images/case-studies/rds/Outcome-06-OD-960w.png" alt="Outcome 6 — Original Dark theme" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+                <div class="outcomes-arc__item" role="listitem">
+                    <picture>
+                        <source type="image/avif" srcset="assets/images/case-studies/rds/Outcome-07-OD-640w.avif 640w, assets/images/case-studies/rds/Outcome-07-OD-960w.avif 960w, assets/images/case-studies/rds/Outcome-07-OD-1280w.avif 1280w" sizes="12vw">
+                        <source type="image/webp" srcset="assets/images/case-studies/rds/Outcome-07-OD-640w.webp 640w, assets/images/case-studies/rds/Outcome-07-OD-960w.webp 960w, assets/images/case-studies/rds/Outcome-07-OD-1280w.webp 1280w" sizes="12vw">
+                        <img src="assets/images/case-studies/rds/Outcome-07-OD-960w.png" alt="Outcome 7 — Original Dark theme" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+                <div class="outcomes-arc__item" role="listitem">
+                    <picture>
+                        <source type="image/avif" srcset="assets/images/case-studies/rds/Outcome-08-OD-640w.avif 640w, assets/images/case-studies/rds/Outcome-08-OD-960w.avif 960w, assets/images/case-studies/rds/Outcome-08-OD-1280w.avif 1280w" sizes="12vw">
+                        <source type="image/webp" srcset="assets/images/case-studies/rds/Outcome-08-OD-640w.webp 640w, assets/images/case-studies/rds/Outcome-08-OD-960w.webp 960w, assets/images/case-studies/rds/Outcome-08-OD-1280w.webp 1280w" sizes="12vw">
+                        <img src="assets/images/case-studies/rds/Outcome-08-OD-960w.png" alt="Outcome 8 — Original Dark theme" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+            </div>
+
+            <!-- Callisto Light -->
+            <div class="outcomes-arc" data-gallery-theme="CL" hidden role="list" aria-label="Callisto Light theme outcomes">
+                <div class="outcomes-arc__item" role="listitem">
+                    <picture>
+                        <source type="image/avif" srcset="assets/images/case-studies/rds/Outcome-01-CL-1-640w.avif 640w, assets/images/case-studies/rds/Outcome-01-CL-1-960w.avif 960w, assets/images/case-studies/rds/Outcome-01-CL-1-1280w.avif 1280w" sizes="12vw">
+                        <source type="image/webp" srcset="assets/images/case-studies/rds/Outcome-01-CL-1-640w.webp 640w, assets/images/case-studies/rds/Outcome-01-CL-1-960w.webp 960w, assets/images/case-studies/rds/Outcome-01-CL-1-1280w.webp 1280w" sizes="12vw">
+                        <img src="assets/images/case-studies/rds/Outcome-01-CL-1-960w.png" alt="Outcome 1 (variant) — Callisto Light theme" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+                <div class="outcomes-arc__item" role="listitem">
+                    <picture>
+                        <source type="image/avif" srcset="assets/images/case-studies/rds/Outcome-01-CL-640w.avif 640w, assets/images/case-studies/rds/Outcome-01-CL-960w.avif 960w, assets/images/case-studies/rds/Outcome-01-CL-1280w.avif 1280w" sizes="12vw">
+                        <source type="image/webp" srcset="assets/images/case-studies/rds/Outcome-01-CL-640w.webp 640w, assets/images/case-studies/rds/Outcome-01-CL-960w.webp 960w, assets/images/case-studies/rds/Outcome-01-CL-1280w.webp 1280w" sizes="12vw">
+                        <img src="assets/images/case-studies/rds/Outcome-01-CL-960w.png" alt="Outcome 1 — Callisto Light theme" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+                <div class="outcomes-arc__item" role="listitem">
+                    <picture>
+                        <source type="image/avif" srcset="assets/images/case-studies/rds/Outcome-02-CL-640w.avif 640w, assets/images/case-studies/rds/Outcome-02-CL-960w.avif 960w, assets/images/case-studies/rds/Outcome-02-CL-1280w.avif 1280w" sizes="12vw">
+                        <source type="image/webp" srcset="assets/images/case-studies/rds/Outcome-02-CL-640w.webp 640w, assets/images/case-studies/rds/Outcome-02-CL-960w.webp 960w, assets/images/case-studies/rds/Outcome-02-CL-1280w.webp 1280w" sizes="12vw">
+                        <img src="assets/images/case-studies/rds/Outcome-02-CL-960w.png" alt="Outcome 2 — Callisto Light theme" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+                <div class="outcomes-arc__item" role="listitem">
+                    <picture>
+                        <source type="image/avif" srcset="assets/images/case-studies/rds/Outcome-03-CL-640w.avif 640w, assets/images/case-studies/rds/Outcome-03-CL-960w.avif 960w, assets/images/case-studies/rds/Outcome-03-CL-1280w.avif 1280w" sizes="12vw">
+                        <source type="image/webp" srcset="assets/images/case-studies/rds/Outcome-03-CL-640w.webp 640w, assets/images/case-studies/rds/Outcome-03-CL-960w.webp 960w, assets/images/case-studies/rds/Outcome-03-CL-1280w.webp 1280w" sizes="12vw">
+                        <img src="assets/images/case-studies/rds/Outcome-03-CL-960w.png" alt="Outcome 3 — Callisto Light theme" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+                <div class="outcomes-arc__item" role="listitem">
+                    <picture>
+                        <source type="image/avif" srcset="assets/images/case-studies/rds/Outcome-04-CL-640w.avif 640w, assets/images/case-studies/rds/Outcome-04-CL-960w.avif 960w, assets/images/case-studies/rds/Outcome-04-CL-1280w.avif 1280w" sizes="12vw">
+                        <source type="image/webp" srcset="assets/images/case-studies/rds/Outcome-04-CL-640w.webp 640w, assets/images/case-studies/rds/Outcome-04-CL-960w.webp 960w, assets/images/case-studies/rds/Outcome-04-CL-1280w.webp 1280w" sizes="12vw">
+                        <img src="assets/images/case-studies/rds/Outcome-04-CL-960w.png" alt="Outcome 4 — Callisto Light theme" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+                <div class="outcomes-arc__item" role="listitem">
+                    <picture>
+                        <source type="image/avif" srcset="assets/images/case-studies/rds/Outcome-05-CL-640w.avif 640w, assets/images/case-studies/rds/Outcome-05-CL-960w.avif 960w, assets/images/case-studies/rds/Outcome-05-CL-1280w.avif 1280w" sizes="12vw">
+                        <source type="image/webp" srcset="assets/images/case-studies/rds/Outcome-05-CL-640w.webp 640w, assets/images/case-studies/rds/Outcome-05-CL-960w.webp 960w, assets/images/case-studies/rds/Outcome-05-CL-1280w.webp 1280w" sizes="12vw">
+                        <img src="assets/images/case-studies/rds/Outcome-05-CL-960w.png" alt="Outcome 5 — Callisto Light theme" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+                <div class="outcomes-arc__item" role="listitem">
+                    <picture>
+                        <source type="image/avif" srcset="assets/images/case-studies/rds/Outcome-06-CL-640w.avif 640w, assets/images/case-studies/rds/Outcome-06-CL-960w.avif 960w, assets/images/case-studies/rds/Outcome-06-CL-1280w.avif 1280w" sizes="12vw">
+                        <source type="image/webp" srcset="assets/images/case-studies/rds/Outcome-06-CL-640w.webp 640w, assets/images/case-studies/rds/Outcome-06-CL-960w.webp 960w, assets/images/case-studies/rds/Outcome-06-CL-1280w.webp 1280w" sizes="12vw">
+                        <img src="assets/images/case-studies/rds/Outcome-06-CL-960w.png" alt="Outcome 6 — Callisto Light theme" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+                <div class="outcomes-arc__item" role="listitem">
+                    <picture>
+                        <source type="image/avif" srcset="assets/images/case-studies/rds/Outcome-07-CL-640w.avif 640w, assets/images/case-studies/rds/Outcome-07-CL-960w.avif 960w, assets/images/case-studies/rds/Outcome-07-CL-1280w.avif 1280w" sizes="12vw">
+                        <source type="image/webp" srcset="assets/images/case-studies/rds/Outcome-07-CL-640w.webp 640w, assets/images/case-studies/rds/Outcome-07-CL-960w.webp 960w, assets/images/case-studies/rds/Outcome-07-CL-1280w.webp 1280w" sizes="12vw">
+                        <img src="assets/images/case-studies/rds/Outcome-07-CL-960w.png" alt="Outcome 7 — Callisto Light theme" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+                <div class="outcomes-arc__item" role="listitem">
+                    <picture>
+                        <source type="image/avif" srcset="assets/images/case-studies/rds/Outcome-08-CL-640w.avif 640w, assets/images/case-studies/rds/Outcome-08-CL-960w.avif 960w, assets/images/case-studies/rds/Outcome-08-CL-1280w.avif 1280w" sizes="12vw">
+                        <source type="image/webp" srcset="assets/images/case-studies/rds/Outcome-08-CL-640w.webp 640w, assets/images/case-studies/rds/Outcome-08-CL-960w.webp 960w, assets/images/case-studies/rds/Outcome-08-CL-1280w.webp 1280w" sizes="12vw">
+                        <img src="assets/images/case-studies/rds/Outcome-08-CL-960w.png" alt="Outcome 8 — Callisto Light theme" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+            </div>
+
+            <!-- Callisto Dark -->
+            <div class="outcomes-arc" data-gallery-theme="CD" hidden role="list" aria-label="Callisto Dark theme outcomes">
+                <div class="outcomes-arc__item" role="listitem">
+                    <picture>
+                        <source type="image/avif" srcset="assets/images/case-studies/rds/Outcome-01-CD-640w.avif 640w, assets/images/case-studies/rds/Outcome-01-CD-960w.avif 960w, assets/images/case-studies/rds/Outcome-01-CD-1280w.avif 1280w" sizes="12vw">
+                        <source type="image/webp" srcset="assets/images/case-studies/rds/Outcome-01-CD-640w.webp 640w, assets/images/case-studies/rds/Outcome-01-CD-960w.webp 960w, assets/images/case-studies/rds/Outcome-01-CD-1280w.webp 1280w" sizes="12vw">
+                        <img src="assets/images/case-studies/rds/Outcome-01-CD-960w.png" alt="Outcome 1 — Callisto Dark theme" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+                <div class="outcomes-arc__item" role="listitem">
+                    <picture>
+                        <source type="image/avif" srcset="assets/images/case-studies/rds/Outcome-02-CD-640w.avif 640w, assets/images/case-studies/rds/Outcome-02-CD-960w.avif 960w, assets/images/case-studies/rds/Outcome-02-CD-1280w.avif 1280w" sizes="12vw">
+                        <source type="image/webp" srcset="assets/images/case-studies/rds/Outcome-02-CD-640w.webp 640w, assets/images/case-studies/rds/Outcome-02-CD-960w.webp 960w, assets/images/case-studies/rds/Outcome-02-CD-1280w.webp 1280w" sizes="12vw">
+                        <img src="assets/images/case-studies/rds/Outcome-02-CD-960w.png" alt="Outcome 2 — Callisto Dark theme" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+                <div class="outcomes-arc__item" role="listitem">
+                    <picture>
+                        <source type="image/avif" srcset="assets/images/case-studies/rds/Outcome-03-CD-640w.avif 640w, assets/images/case-studies/rds/Outcome-03-CD-960w.avif 960w, assets/images/case-studies/rds/Outcome-03-CD-1280w.avif 1280w" sizes="12vw">
+                        <source type="image/webp" srcset="assets/images/case-studies/rds/Outcome-03-CD-640w.webp 640w, assets/images/case-studies/rds/Outcome-03-CD-960w.webp 960w, assets/images/case-studies/rds/Outcome-03-CD-1280w.webp 1280w" sizes="12vw">
+                        <img src="assets/images/case-studies/rds/Outcome-03-CD-960w.png" alt="Outcome 3 — Callisto Dark theme" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+                <div class="outcomes-arc__item" role="listitem">
+                    <picture>
+                        <source type="image/avif" srcset="assets/images/case-studies/rds/Outcome-04-CD-640w.avif 640w, assets/images/case-studies/rds/Outcome-04-CD-960w.avif 960w, assets/images/case-studies/rds/Outcome-04-CD-1280w.avif 1280w" sizes="12vw">
+                        <source type="image/webp" srcset="assets/images/case-studies/rds/Outcome-04-CD-640w.webp 640w, assets/images/case-studies/rds/Outcome-04-CD-960w.webp 960w, assets/images/case-studies/rds/Outcome-04-CD-1280w.webp 1280w" sizes="12vw">
+                        <img src="assets/images/case-studies/rds/Outcome-04-CD-960w.png" alt="Outcome 4 — Callisto Dark theme" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+                <div class="outcomes-arc__item" role="listitem">
+                    <picture>
+                        <source type="image/avif" srcset="assets/images/case-studies/rds/Outcome-05-CD-640w.avif 640w, assets/images/case-studies/rds/Outcome-05-CD-960w.avif 960w, assets/images/case-studies/rds/Outcome-05-CD-1280w.avif 1280w" sizes="12vw">
+                        <source type="image/webp" srcset="assets/images/case-studies/rds/Outcome-05-CD-640w.webp 640w, assets/images/case-studies/rds/Outcome-05-CD-960w.webp 960w, assets/images/case-studies/rds/Outcome-05-CD-1280w.webp 1280w" sizes="12vw">
+                        <img src="assets/images/case-studies/rds/Outcome-05-CD-960w.png" alt="Outcome 5 — Callisto Dark theme" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+                <div class="outcomes-arc__item" role="listitem">
+                    <picture>
+                        <source type="image/avif" srcset="assets/images/case-studies/rds/Outcome-06-CD-640w.avif 640w, assets/images/case-studies/rds/Outcome-06-CD-960w.avif 960w, assets/images/case-studies/rds/Outcome-06-CD-1280w.avif 1280w" sizes="12vw">
+                        <source type="image/webp" srcset="assets/images/case-studies/rds/Outcome-06-CD-640w.webp 640w, assets/images/case-studies/rds/Outcome-06-CD-960w.webp 960w, assets/images/case-studies/rds/Outcome-06-CD-1280w.webp 1280w" sizes="12vw">
+                        <img src="assets/images/case-studies/rds/Outcome-06-CD-960w.png" alt="Outcome 6 — Callisto Dark theme" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+                <div class="outcomes-arc__item" role="listitem">
+                    <picture>
+                        <source type="image/avif" srcset="assets/images/case-studies/rds/Outcome-07-CD-640w.avif 640w, assets/images/case-studies/rds/Outcome-07-CD-960w.avif 960w, assets/images/case-studies/rds/Outcome-07-CD-1280w.avif 1280w" sizes="12vw">
+                        <source type="image/webp" srcset="assets/images/case-studies/rds/Outcome-07-CD-640w.webp 640w, assets/images/case-studies/rds/Outcome-07-CD-960w.webp 960w, assets/images/case-studies/rds/Outcome-07-CD-1280w.webp 1280w" sizes="12vw">
+                        <img src="assets/images/case-studies/rds/Outcome-07-CD-960w.png" alt="Outcome 7 — Callisto Dark theme" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+                <div class="outcomes-arc__item" role="listitem">
+                    <picture>
+                        <source type="image/avif" srcset="assets/images/case-studies/rds/Outcome-08-CD-640w.avif 640w, assets/images/case-studies/rds/Outcome-08-CD-960w.avif 960w, assets/images/case-studies/rds/Outcome-08-CD-1280w.avif 1280w" sizes="12vw">
+                        <source type="image/webp" srcset="assets/images/case-studies/rds/Outcome-08-CD-640w.webp 640w, assets/images/case-studies/rds/Outcome-08-CD-960w.webp 960w, assets/images/case-studies/rds/Outcome-08-CD-1280w.webp 1280w" sizes="12vw">
+                        <img src="assets/images/case-studies/rds/Outcome-08-CD-960w.png" alt="Outcome 8 — Callisto Dark theme" loading="lazy" decoding="async">
+                    </picture>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigation -->
+        <nav class="case-nav" aria-label="Case study navigation">
+            <div class="case-nav__container">
+                <a href="index.html#work" class="case-nav__link">&larr; Back to Portfolio</a>
+                <a href="case-study-dvs.html" class="case-nav__link">Next: Data Visualization System &rarr;</a>
+            </div>
+        </nav>
+    </main>
+    
+    <script>
+        (function() {
+            var html = document.documentElement;
+            var lbls = { auto:"Auto", light:"Light", dark:"Dark", "high-contrast":"Contrast" };
+            function sys() { return (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light"; }
+            function apply(pref) {
+                html.setAttribute("data-theme", pref === "auto" ? sys() : pref);
+                document.querySelectorAll(".theme-btn").forEach(function(b) {
+                    var on = b.dataset.theme === pref;
+                    b.classList.toggle("active", on);
+                    b.setAttribute("aria-pressed", on ? "true" : "false");
+                });
+                document.querySelectorAll(".theme-dropdown-item").forEach(function(i) { i.classList.toggle("active", i.dataset.theme === pref); });
+                var l = document.querySelector(".theme-dropdown-label");
+                if (l) l.textContent = lbls[pref] || "Auto";
+            }
+            document.querySelectorAll(".theme-btn").forEach(function(b) {
+                b.addEventListener("click", function() { apply(b.dataset.theme); try { localStorage.setItem("theme", b.dataset.theme); } catch(e){} });
+            });
+            var db = document.querySelector(".theme-dropdown-button");
+            var dm = document.querySelector(".theme-dropdown-menu");
+            if (db && dm) {
+                db.addEventListener("click", function(e) { e.stopPropagation(); var open = dm.classList.toggle("open"); db.setAttribute("aria-expanded", open ? "true" : "false"); });
+                document.addEventListener("click", function() { dm.classList.remove("open"); if(db) db.setAttribute("aria-expanded","false"); });
+            }
+            document.querySelectorAll(".theme-dropdown-item").forEach(function(i) {
+                i.addEventListener("click", function() {
+                    apply(i.dataset.theme);
+                    try { localStorage.setItem("theme", i.dataset.theme); } catch(e){}
+                    if (dm) dm.classList.remove("open"); if (db) db.setAttribute("aria-expanded","false");
+                });
+            });
+            if (window.matchMedia) window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function() {
+                try { if ((localStorage.getItem("theme") || "auto") === "auto") apply("auto"); } catch(e){} });
+            try { apply(localStorage.getItem("theme") || "auto"); } catch(e) { apply("auto"); }
+        })();
+        var hdr = document.querySelector(".header");
+        if (hdr) window.addEventListener("scroll", function() { hdr.classList.toggle("scrolled", window.pageYOffset > 0); });
+    </script>
+    <script>
+        /* Outcomes Gallery Theme Switcher */
+        (function() {
+            var btns = document.querySelectorAll('.outcomes-theme-btn');
+            var arcs = document.querySelectorAll('.outcomes-arc');
+            btns.forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var theme = btn.getAttribute('data-gallery');
+                    btns.forEach(function(b) {
+                        b.classList.toggle('active', b === btn);
+                    });
+                    arcs.forEach(function(arc) {
+                        if (arc.getAttribute('data-gallery-theme') === theme) {
+                            arc.removeAttribute('hidden');
+                        } else {
+                            arc.setAttribute('hidden', '');
+                        }
+                    });
+                });
+            });
+        })();
+    </script>
+    <script>
+        /* Mini Table of Contents */
+        (function() {
+            var sections = Array.prototype.slice.call(document.querySelectorAll('h2.case-section__title'));
+            if (!sections.length) return;
+            sections.forEach(function(h) {
+                if (!h.id) h.id = h.textContent.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+            });
+            var priority = ['impact', 'artifact'];
+            var toc = document.createElement('nav');
+            toc.className = 'case-toc';
+            toc.setAttribute('aria-label', 'Page sections');
+            var lbl = document.createElement('div');
+            lbl.className = 'case-toc__label';
+            lbl.textContent = 'On this page';
+            toc.appendChild(lbl);
+            var list = document.createElement('ul');
+            list.className = 'case-toc__list';
+            sections.forEach(function(h) {
+                var li = document.createElement('li');
+                var a = document.createElement('a');
+                a.href = '#' + h.id;
+                a.className = 'case-toc__link';
+                a.textContent = h.textContent.trim();
+                if (priority.some(function(p) { return h.id.indexOf(p) !== -1; })) a.setAttribute('data-priority', 'high');
+                li.appendChild(a);
+                list.appendChild(li);
+            });
+            toc.appendChild(list);
+            document.body.appendChild(toc);
+            var hero = document.querySelector('.case-hero');
+            var links = toc.querySelectorAll('.case-toc__link');
+            function updateVisibility() { toc.classList.toggle('visible', !hero || hero.getBoundingClientRect().bottom < 0); }
+            function updateActive() {
+                var scrollY = window.pageYOffset + 140;
+                var current = null;
+                sections.forEach(function(h) { if (h.offsetTop <= scrollY) current = h.id; });
+                links.forEach(function(a) { a.classList.toggle('toc-active', a.getAttribute('href') === '#' + current); });
+            }
+            window.addEventListener('scroll', function() { updateVisibility(); updateActive(); }, { passive: true });
+            updateVisibility(); updateActive();
+        })();
+    </script>
+</body>
+</html>
