@@ -37,6 +37,122 @@
             --color-text-tertiary: #888888;
             --color-border: rgba(255,255,255,0.12);
         }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: var(--font-body);
+            font-size: var(--type-body);
+            line-height: 1.7;
+            color: var(--color-text-primary);
+            background: var(--color-bg-primary);
+            transition: background-color var(--transition-base), color var(--transition-base);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        :focus-visible {
+            outline: var(--focus-width) solid var(--focus-color);
+            outline-offset: var(--focus-offset);
+            border-radius: 2px;
+        }
+        
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--color-bg-secondary);
+            border-bottom: 1px solid var(--color-border);
+            z-index: 1000;
+            padding: var(--space-md) var(--grid-margin);
+            transition: all var(--transition-base);
+            backdrop-filter: blur(10px);
+        }
+        
+        .header.scrolled {
+            background: rgba(250, 250, 250, 0.8);
+            box-shadow: 0 4px 24px rgba(107, 70, 255, 0.1);
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #6B46FF 0%, #8C6BFF 25%, #6B46FF 50%, #8C6BFF 75%, #6B46FF 100%);
+            background-size: 200% 100%;
+            opacity: 0;
+            transition: opacity var(--transition-base);
+            animation: gradientFlow 4s linear infinite;
+        }
+        
+        .header.scrolled::before {
+            opacity: 1;
+        }
+        
+        @keyframes gradientFlow {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+        
+        .header__container {
+            max-width: 1440px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header__logo {
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color var(--transition-fast);
+        }
+        
+        .back-link:hover {
+            color: var(--color-accent);
+        }
+        
+        .back-link::before {
+            content: '\2190';
+            font-size: 20px;
+        }
+        
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body {
@@ -59,6 +175,18 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+        }
+        .header__logo {
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
         }
         .back-link {
             color: var(--color-accent);
@@ -402,7 +530,7 @@
 
     <!-- Header bar -->
     <header class="case-header-bar">
-        <a href="index-netflix.html#work" class="back-link">&larr; Back to Portfolio</a>
+        <a href="index.html#work" class="back-link">&larr; Back to Portfolio</a>
         <div class="theme-controls">
             <button class="theme-btn active" data-theme="light">Light</button>
             <button class="theme-btn" data-theme="dark">Dark</button>
@@ -689,7 +817,7 @@
 
     <!-- Footer nav -->
     <nav class="case-nav-footer">
-        <a href="index-netflix.html#work">&larr; Back to all case studies</a>
+        <a href="index.html#work">&larr; Back to all case studies</a>
         &nbsp;&nbsp;&bull;&nbsp;&nbsp;
         <a href="case-study-ai-netflix.html">Next: AI-Assisted Workflows &rarr;</a>
     </nav>

@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rebecca Gore &mdash; Senior Product Designer, Developer Platforms &amp; Observability — Design Systems Lead & Principal Product Designer</title>
     <meta name="description" content="Principal Product Designer specializing in developer platforms, data-dense observability tools, and translating complex technical signals into intuitive, actionable experiences for engineering audiences.">
-    <script>!function(){try{var t=localStorage.getItem('theme')||'auto';var a=t==='auto'?(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):t;document.documentElement.setAttribute('data-theme',a)}catch(e){}}();</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
     <style>
@@ -194,7 +193,7 @@
         [data-theme="dark"] .header { background: rgba(15, 15, 15, 0.8); }
         [data-theme="high-contrast"] .header { background: #000; border-bottom-color: #FFF; backdrop-filter: none; -webkit-backdrop-filter: none; }
 
-        .headercontainer {
+        .header__container {
             max-width: 1440px;
             margin: 0 auto;
             padding: 0 var(--space-lg);
@@ -202,25 +201,37 @@
             justify-content: space-between;
             align-items: center;
         }
-               .headernav {
+        .header__logo {
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+        .header__nav {
             display: flex;
             align-items: center;
             gap: var(--space-lg);
         }
-        .navlinks {
+        .nav__links {
             display: flex;
             gap: var(--space-lg);
             list-style: none;
         }
-        .navlink {
+        .nav__link {
             color: var(--color-text-secondary);
             text-decoration: none;
             font-weight: 500;
             position: relative;
             transition: color var(--transition-fast);
         }
-        .navlink:hover { color: var(--color-accent); }
-        .navlink::after {
+        .nav__link:hover { color: var(--color-accent); }
+        .nav__link::after {
             content: '';
             position: absolute;
             bottom: -4px; left: 0;
@@ -228,7 +239,7 @@
             background: var(--color-accent);
             transition: width var(--transition-fast);
         }
-        .navlink:hover::after { width: 100%; }
+        .nav__link:hover::after { width: 100%; }
 
         /* ─── Theme Controls ─── */
         .theme-controls {
@@ -389,8 +400,8 @@
             box-shadow: -4px 0 20px rgba(0,0,0,0.1);
         }
         .nav-menu.active { right: 0; }
-        .nav-menu .navlinks { flex-direction: column; gap: var(--space-md); }
-        .nav-menu .navlink { font-size: 20px; }
+        .nav-menu .nav__links { flex-direction: column; gap: var(--space-md); }
+        .nav-menu .nav__link { font-size: 20px; }
         .nav-menu .theme-controls {
             margin-top: var(--space-lg);
             flex-direction: column;
@@ -418,10 +429,10 @@
         [data-theme="high-contrast"] .nav-menu .theme-btn.active { background: #FFD700; color: #000; border-color: #FFD700; }
 
         @media (max-width: 1050px) {
-            .headernav { display: none; }
+            .header__nav { display: none; }
             .hamburger { display: flex; }
         }
-        @media (max-width: 768px) { .headercontainer { padding: 0 var(--space-md); } }
+        @media (max-width: 768px) { .header__container { padding: 0 var(--space-md); } }
         
         /* Hero Section */
         .hero {
@@ -448,14 +459,14 @@
             pointer-events: none;
         }
 
-        .herocontainer {
+        .hero__container {
             max-width: 900px;
             margin: 0 auto;
             position: relative;
             z-index: 1;
         }
 
-        .heroeyebrow {
+        .hero__eyebrow {
             font-size: 14px;
             text-transform: uppercase;
             letter-spacing: 0.15em;
@@ -465,7 +476,7 @@
             animation: fadeInUp 0.6s ease-out;
         }
 
-        .herotitle {
+        .hero__title {
             font-family: var(--font-display);
             font-size: clamp(36px, 6vw, 56px);
             font-weight: 900;
@@ -478,7 +489,7 @@
             animation: fadeInUp 0.8s ease-out 0.1s backwards;
         }
 
-        .herosubtitle {
+        .hero__subtitle {
             font-size: 22px;
             color: var(--color-text-secondary);
             max-width: 700px;
@@ -486,7 +497,7 @@
             animation: fadeInUp 1s ease-out 0.2s backwards;
         }
 
-        .herocta {
+        .hero__cta {
             display: inline-flex;
             gap: var(--space-md);
             animation: fadeInUp 1.2s ease-out 0.3s backwards;
@@ -610,7 +621,7 @@
             border-radius: 16px;
             border: 1px solid var(--color-border);
             overflow: hidden;
-            display: block;
+            display: flex;
             flex-direction: column;
             text-decoration: none;
             transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base), background var(--transition-base);
@@ -828,18 +839,18 @@
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
         }
 
-        .playing-cardicon {
+        .playing-card__icon {
             font-size: 32px;
             margin-bottom: var(--space-sm);
         }
 
-        .playing-cardtitle {
+        .playing-card__title {
             font-weight: 700;
             margin-bottom: var(--space-xs);
             font-size: 16px;
         }
 
-        .playing-carddescription {
+        .playing-card__description {
             font-size: 14px;
             color: var(--color-text-secondary);
             line-height: 1.5;
@@ -875,31 +886,31 @@
             border-color: var(--color-accent);
         }
 
-        .skill-categoryicon {
+        .skill-category__icon {
             font-size: 40px;
             margin-bottom: var(--space-md);
         }
 
-        .skill-categorytitle {
+        .skill-category__title {
             font-family: var(--font-display);
             font-size: 24px;
             font-weight: 700;
             margin-bottom: var(--space-sm);
         }
 
-        .skill-categorydescription {
+        .skill-category__description {
             color: var(--color-text-secondary);
             margin-bottom: var(--space-md);
             font-size: 16px;
             line-height: 1.6;
         }
 
-        .skill-categorylist {
+        .skill-category__list {
             list-style: none;
             font-size: 14px;
         }
 
-        .skill-categorylist li {
+        .skill-category__list li {
             padding: 8px 0;
             color: var(--color-text-secondary);
             display: flex;
@@ -907,7 +918,7 @@
             gap: 8px;
         }
 
-        .skill-categorylist li::before {
+        .skill-category__list li::before {
             content: '→';
             color: var(--color-accent);
             font-weight: 700;
@@ -1176,32 +1187,32 @@
             text-align: center;
         }
 
-        .footercontent {
+        .footer__content {
             max-width: 700px;
             margin: 0 auto;
         }
 
-        .footertitle {
+        .footer__title {
             font-family: var(--font-display);
             font-size: clamp(32px, 5vw, 48px);
             font-weight: 900;
             margin-bottom: var(--space-md);
         }
 
-        .footersubtitle {
+        .footer__subtitle {
             font-size: 20px;
             color: var(--color-text-secondary);
             margin-bottom: var(--space-lg);
         }
 
-        .footerlinks {
+        .footer__links {
             display: flex;
             gap: var(--space-md);
             justify-content: center;
             margin-bottom: var(--space-lg);
         }
 
-        .footercopyright {
+        .footer__copyright {
             font-size: 14px;
             color: var(--color-text-tertiary);
             padding-top: var(--space-lg);
@@ -1218,7 +1229,7 @@
                 padding: var(--space-xl) var(--space-md);
             }
 
-            .herocta {
+            .hero__cta {
                 flex-direction: column;
                 width: 100%;
             }
@@ -1228,7 +1239,7 @@
                 text-align: center;
             }
 
-            .footerlinks {
+            .footer__links {
                 flex-direction: column;
             }
 
@@ -1236,220 +1247,63 @@
                 flex-direction: column;
             }
         }
-    
-/* Logo mark */
-.headerlogo .logo-mark { flex: 0 0 auto; }
-.headerlogo span.logo-text { display: inline-block; }
-
-/* Ensure skip link is present & visible on focus */
-.skip-link {
-  position: absolute;
-  top: -40px;
-  left: 16px;
-  background: var(--color-bg-secondary);
-  color: var(--color-text-primary);
-  padding: 8px 16px;
-  border-radius: 6px;
-  text-decoration: none;
-  font-weight: 600;
-  border: 2px solid var(--color-accent);
-  z-index: 9999;
-  transition: top var(--motion-medium, 200ms);
-}
-.skip-link:focus { top: 16px; outline: 3px solid var(--color-accent); outline-offset: 3px; }
-
-/* Main anchor offset so skip-link / logo jump lands nicely */
-#main-content { scroll-margin-top: 120px; }
-
-
-/* Ensure logo text uses display font + text color (not link blue) */
-.headerlogo { color: var(--color-text-primary) !important; font-family: var(--font-display); }
-.headerlogo:hover { color: var(--color-text-primary); }
-.headerlogo .logo-text { color: var(--color-text-primary); }
-
-
-/* ─── Case card click affordance + loading ─── */
-.case-card { cursor: pointer; }
-.case-card:active { transform: translateY(-4px) scale(1.01); }
-.case-card .case-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 10px;
-  font-weight: 700;
-  font-size: 14px;
-  color: var(--color-text-primary);
-  text-decoration: none;
-}
-.case-card .case-cta .arrow { transition: transform var(--motion-medium); }
-.case-card:hover .case-cta .arrow { transform: translateX(4px); }
-.case-card:hover .case-cta { color: var(--color-accent); }
-
-.case-card.is-loading {
-  pointer-events: none;
-  transform: translateY(-8px) scale(1.02);
-}
-.case-card.is-loading::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.08);
-  backdrop-filter: blur(2px);
-}
-[data-theme="dark"] .case-card.is-loading::after { background: rgba(0,0,0,0.35); }
-[data-theme="high-contrast"] .case-card.is-loading::after { background: rgba(255,255,255,0.08); }
-
-.case-card .card-spinner {
-  display: none;
-  position: absolute;
-  inset: 0;
-  margin: auto;
-  width: 42px;
-  height: 42px;
-  border-radius: 999px;
-  border: 4px solid rgba(26,26,26,0.18);
-  border-top-color: var(--color-accent);
-  animation: spin 800ms linear infinite;
-  z-index: 2;
-}
-[data-theme="dark"] .case-card .card-spinner { border-color: rgba(245,245,245,0.18); border-top-color: var(--color-accent); }
-[data-theme="high-contrast"] .case-card .card-spinner { border-color: rgba(255,255,255,0.28); border-top-color: #FFD700; }
-
-.case-card.is-loading .card-spinner { display: block; }
-
-@keyframes spin { to { transform: rotate(360deg); } }
-
-        .case-footer { margin-top:auto; padding-top: 12px; border-top: 1px solid var(--color-border); display:flex; justify-content:flex-end; }
-        .case-cta { font-weight:700; display:inline-flex; align-items:center; gap:8px; }
-        .case-card:hover .case-cta { color: var(--color-accent); }
-        .case-card { cursor:pointer; }
-        .case-card.is-loading { pointer-events:none; transform: translateY(-6px) scale(1.01); }
-        .case-card .card-spinner { display:none; position:absolute; inset:0; margin:auto; width:42px; height:42px; border-radius:999px; border:4px solid rgba(0,0,0,0.2); border-top-color: var(--color-accent); animation: spin 800ms linear infinite; z-index:2; }
-        [data-theme="dark"] .case-card .card-spinner { border-color: rgba(255,255,255,0.2); }
-        .case-card.is-loading .card-spinner { display:block; }
-        .case-card.is-loading::after { content:""; position:absolute; inset:0; background: rgba(0,0,0,0.10); backdrop-filter: blur(2px); }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        
-
-
-/* === Index header/nav fixes === */
-.headerlogo { text-decoration: none; color: var(--color-text-primary); font-family: var(--font-display); }
-.headerlogo .logo-text { color: var(--color-text-primary); }
-.navlinks { list-style: none; margin: 0; padding: 0; display: flex; gap: var(--space-md); align-items: center; }
-.navlinks li::marker { content: ""; }
-.navlinks li { margin: 0; padding: 0; }
-
-/* Collapse header earlier to avoid wrap */
-@media (max-width: 1040px) {
-  .headernav { display: none; }
-  .hamburger { display: flex; }
-}
-
-/* === Work grid: equal-height cards === */
-.work-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-md); align-items: stretch; }
-.case-card { height: 100%; }
-.case-content { display: flex; flex-direction: column; height: 100%; }
-.case-footer { margin-top: auto; }
-
-
-/* --- Index v7 fixes --- */
-.navlinks { list-style: none !important; margin: 0; padding: 0; }
-.navlinks li { margin: 0; padding: 0; }
-.navlinks li::before { content: none !important; }
-.logo-text::before { content: none !important; }
-.headerlogo { text-decoration: none; color: var(--color-text-primary); font-family: var(--font-display); display:flex; align-items:center; gap:12px; }
-.headerlogo .logo-text { color: var(--color-text-primary); }
-
-/* Responsive collapse earlier to prevent overlap */
-@media (max-width: 1120px) {
-  .headernav { display: none !important; }
-  .hamburger { display: flex !important; }
-}
-
-/* Force responsive grid for case cards */
-.work-grid { display:grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-md); align-items: stretch; }
-@media (max-width: 1100px){ .work-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
-@media (max-width: 700px){ .work-grid { grid-template-columns: 1fr; } }
-
-.case-card { height:100%; }
-.case-content { display:flex; flex-direction:column; height:100%; }
-.case-footer { margin-top:auto; }
-
-
-/* --- Emergency visibility patch (prevents blank body) --- */
-main, section { display: block !important; visibility: visible !important; }
-.hero, .hero * , .section, .section * { opacity: 1 !important; }
-
-
-/* --- v9 index fixes --- */
-.nav__links { list-style: none !important; margin: 0; padding: 0; }
-.nav__links li { margin: 0; padding: 0; }
-.headerlogo { text-decoration: none; color: var(--color-text-primary); font-family: var(--font-display); display:flex; align-items:center; gap:12px; }
-.headerlogo .logo-text { color: var(--color-text-primary); }
-/* Collapse earlier to prevent wrap/overlap */
-@media (max-width: 1120px) { .headernav { display:none !important; } .hamburger { display:flex !important; } }
-/* Ensure main is not affected by nav-menu positioning */
-.nav-menu { right: -100%; }
-</style>
+    </style>
 </head>
 <body>
     <!-- Header -->
          <!-- Skip link -->
     <a href="#main-content" class="skip-link">Skip to main content</a>
-
-<header class="header" role="banner">
-  <div class="headercontainer">
-    <a href="#main-content" class="headerlogo" aria-label="Home">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="28" height="28" aria-hidden="true" focusable="false" style="flex-shrink:0;border-radius:6px;"><defs><linearGradient id="logo-grad-rds" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#FF6B2B"/><stop offset="100%" stop-color="#6B46FF"/></linearGradient></defs><rect width="32" height="32" rx="7" fill="url(#logo-grad-rds)"/><text x="16" y="22" text-anchor="middle" fill="#fff" font-family="Georgia,serif" font-weight="700" font-size="14" letter-spacing="-0.5">RHG</text></svg>
-      <span class="logo-text">Rebecca Havens Gore</span>
-    </a>
-
-    <nav class="headernav" aria-label="Site navigation">
-      <ul class="navlinks">
-        <li><a href="#about" class="navlink">About</a></li>
-        <li><a href="#skills" class="navlink">Skills</a></li>
-        <li><a href="#resume" class="navlink">Resume</a></li>
-        <li><a href="#contact" class="navlink">Contact</a></li>
-      </ul>
-      <div class="theme-controls" role="group" aria-label="Color theme">
-                    <button class="theme-btn" data-theme="auto" aria-label="Use system theme" aria-pressed="false"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4C12.82 3.04 12.42 3 12 3zm0-2c6.08 0 11 4.92 11 11s-4.92 11-11 11S1 18.08 1 12 5.92 1 12 1z"/></svg> Auto</button>
-                    <button class="theme-btn" data-theme="light" aria-label="Light theme" aria-pressed="false"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1z"/></svg> Light</button>
-                    <button class="theme-btn" data-theme="dark" aria-label="Dark theme" aria-pressed="false"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 2c-1.05 0-2.05.16-3 .46 4.06 1.27 7 5.06 7 9.54 0 4.48-2.94 8.27-7 9.54.95.3 1.95.46 3 .46 5.52 0 10-4.48 10-10S14.52 2 9 2z"/></svg> Dark</button>
-                    <button class="theme-btn" data-theme="high-contrast" aria-label="High contrast theme" aria-pressed="false"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93s3.05-7.44 7-7.93v15.86zm2-15.86c1.03.13 2 .45 2.87.93H13v-.93zM13 7h5.24c.25.31.48.65.68 1H13V7zm0 3h6.74c.08.33.15.66.19 1H13v-1zm0 9.93V19h2.87c-.87.48-1.84.8-2.87.93zM18.24 17H13v-1h5.92c-.2.35-.43.69-.68 1zm1.5-3H13v-1h6.93c-.04.34-.11.67-.19 1z"/></svg> Contrast</button>
+    <header class="header" role="banner">
+        <div class="header__container">
+            <a href="#main-content" class="header__logo">✦ Rebecca Havens Gore</a>
+            
+            <!-- Desktop Navigation -->
+            <nav class="header__nav">
+                <ul class="nav__links">
+                    <li><a href="#work" class="nav__link">Work</a></li>
+                    <li><a href="#about" class="nav__link">About</a></li>
+                    <li><a href="#skills" class="nav__link">Skills</a></li>
+                    <li><a href="#resume" class="nav__link">Resume</a></li>
+                    <li><a href="#contact" class="nav__link">Contact</a></li>
+                </ul>
+                <div class="theme-controls">
+                    <button class="theme-btn active" data-theme="light">Light</button>
+                    <button class="theme-btn" data-theme="dark">Dark</button>
                 </div>
-    </nav>
+            </nav>
 
-    <button class="hamburger" aria-label="Toggle menu" aria-controls="mobile-nav" aria-expanded="false" type="button">
-      <span></span><span></span><span></span>
-    </button>
-  </div>
-</header>
+            <!-- Mobile Hamburger -->
+            <button class="hamburger" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
 
-<div class="nav-overlay" aria-hidden="true"></div>
-<div class="nav-menu" id="mobile-nav" role="dialog" aria-label="Menu" aria-hidden="true" inert>
-  <ul class="navlinks">
-    <li><a href="#about" class="navlink">About</a></li>
-    <li><a href="#skills" class="navlink">Skills</a></li>
-    <li><a href="#resume" class="navlink">Resume</a></li>
-    <li><a href="#contact" class="navlink">Contact</a></li>
-  </ul>
-  <div class="theme-controls" role="group" aria-label="Color theme">
-    <button class="theme-btn" data-theme="auto" aria-pressed="false" type="button">Auto</button>
-    <button class="theme-btn" data-theme="light" aria-pressed="false" type="button">Light</button>
-    <button class="theme-btn" data-theme="dark" aria-pressed="false" type="button">Dark</button>
-    <button class="theme-btn" data-theme="high-contrast" aria-pressed="false" type="button">Contrast</button>
-  </div>
-</div>
-
-<main id="main-content" tabindex="-1">
+    <!-- Mobile Navigation Overlay -->
+    <div class="nav-overlay"></div>
+    <div class="nav-menu">
+        <ul class="nav__links">
+            <li><a href="#work" class="nav__link">Work</a></li>
+            <li><a href="#about" class="nav__link">About</a></li>
+            <li><a href="#skills" class="nav__link">Skills</a></li>
+            <li><a href="#resume" class="nav__link">Resume</a></li>
+            <li><a href="#contact" class="nav__link">Contact</a></li>
+        </ul>
+        <div class="theme-controls">
+            <button class="theme-btn active" data-theme="light">Light Mode</button>
+            <button class="theme-btn" data-theme="dark">Dark Mode</button>
+        </div>
+    </div>
 
     <!-- Hero -->
     <section class="hero">
-        <div class="herocontainer">
-            <p class="heroeyebrow">Design Systems Lead & Principal Product Designer</p>
-            <h1 class="herotitle">Turning complex technical signals into clarity engineers can act on</h1>
-            <p class="herosubtitle">10+ years designing developer tools, data visualization systems, AI-assisted workflows, and platform experiences for technical audiences in high-stakes, data-dense environments.</p>
-            <div class="herocta">
+        <div class="hero__container">
+            <p class="hero__eyebrow">Design Systems Lead & Principal Product Designer</p>
+            <h1 class="hero__title">Turning complex technical signals into clarity engineers can act on</h1>
+            <p class="hero__subtitle">10+ years designing developer tools, data visualization systems, AI-assisted workflows, and platform experiences for technical audiences in high-stakes, data-dense environments.</p>
+            <div class="hero__cta">
                 <a href="#work" class="btn btn-primary">View My Work</a>
                 <a href="#contact" class="btn btn-secondary">Get In Touch</a>
             </div>
@@ -1465,115 +1319,168 @@ main, section { display: block !important; visibility: visible !important; }
             </div>
 
             <div class="work-grid">
-
                 <!-- Case Study 1 -->
-                <div class="case-card" role="link" tabindex="0" data-href="case-study-rds.html">
+                <div class="case-card" onclick="window.location.href='case-study-rds.html'">
                     <div class="case-header" data-color="orange">⚡</div>
                     <div class="case-content">
                         <span class="case-tag">Design Systems</span>
                         <h3 class="case-title">R7 Design System & MUI Migration</h3>
                         <p class="case-description">Scaling a unified, accessible UI foundation for a multi-product security platform</p>
                         <div class="case-stats">
-                            <div class="stat"><strong>40%</strong><span>Faster Builds</span></div>
-<div class="stat"><strong>80%</strong><span>Adoption</span></div>
-                        </div>
-                        <div class="case-footer">
-                            <span class="case-cta">View case study <span class="arrow" aria-hidden="true">→</span></span>
+                            <div class="stat">
+                                <strong>40%</strong>
+                                <span>Faster Builds</span>
+                            </div>
+                            <div class="stat">
+                                <strong>80%</strong>
+                                <span>Adoption</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="card-spinner" aria-hidden="true"></div>
                 </div>
 
                 <!-- Case Study 2 -->
-                <div class="case-card" role="link" tabindex="0" data-href="case-study-dvs.html">
+                <div class="case-card" onclick="window.location.href='case-study-dvs.html'">
                     <div class="case-header" data-color="purple">📊</div>
                     <div class="case-content">
                         <span class="case-tag">Data Visualization</span>
                         <h3 class="case-title">Data Visualization System</h3>
                         <p class="case-description">A scalable visualization framework powering insights across the platform</p>
                         <div class="case-stats">
-                            <div class="stat"><strong>60%</strong><span>Faster Design</span></div>
-<div class="stat"><strong>30%</strong><span>More Engagement</span></div>
-                        </div>
-                        <div class="case-footer">
-                            <span class="case-cta">View case study <span class="arrow" aria-hidden="true">→</span></span>
+                            <div class="stat">
+                                <strong>60%</strong>
+                                <span>Faster Design</span>
+                            </div>
+                            <div class="stat">
+                                <strong>30%</strong>
+                                <span>More Engagement</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="card-spinner" aria-hidden="true"></div>
                 </div>
 
                 <!-- Case Study 3 -->
-                <div class="case-card" role="link" tabindex="0" data-href="case-study-design-forum.html">
+                <div class="case-card" onclick="window.location.href='case-study-design-forum.html'">
                     <div class="case-header" data-color="cyan">🛡</div>
                     <div class="case-content">
                         <span class="case-tag">Design Ops</span>
                         <h3 class="case-title">Design Forum & UX Standards</h3>
                         <p class="case-description">Governance framework for design organization excellence</p>
                         <div class="case-stats">
-                            <div class="stat"><strong>35%</strong><span>Faster Approvals</span></div>
-<div class="stat"><strong>40%</strong><span>Better A11y</span></div>
-                        </div>
-                        <div class="case-footer">
-                            <span class="case-cta">View case study <span class="arrow" aria-hidden="true">→</span></span>
+                            <div class="stat">
+                                <strong>35%</strong>
+                                <span>Faster Approvals</span>
+                            </div>
+                            <div class="stat">
+                                <strong>40%</strong>
+                                <span>Better A11y</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="card-spinner" aria-hidden="true"></div>
                 </div>
 
                 <!-- Case Study 4 -->
-                <div class="case-card" role="link" tabindex="0" data-href="case-study-unified-platform.html">
+                <div class="case-card" onclick="window.location.href='case-study-unified-platform.html'">
                     <div class="case-header" data-color="magenta">✨</div>
                     <div class="case-content">
                         <span class="case-tag">Platform UX</span>
                         <h3 class="case-title">Unified Platform Experience</h3>
                         <p class="case-description">Establishing coherent navigation, filtering, and cross-surface interaction patterns across a fragmented multi-product platform &mdash; eliminating context-switching friction for technical users</p>
                         <div class="case-stats">
-                            <div class="stat"><strong>50%</strong><span>UX Consistency</span></div>
-<div class="stat"><strong>28%</strong><span>Task Success</span></div>
-                        </div>
-                        <div class="case-footer">
-                            <span class="case-cta">View case study <span class="arrow" aria-hidden="true">→</span></span>
+                            <div class="stat">
+                                <strong>50%</strong>
+                                <span>UX Consistency</span>
+                            </div>
+                            <div class="stat">
+                                <strong>28%</strong>
+                                <span>Task Success</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="card-spinner" aria-hidden="true"></div>
                 </div>
 
                 <!-- Case Study 5 -->
-                <div class="case-card" role="link" tabindex="0" data-href="case-study-ai.html">
+                <div class="case-card" onclick="window.location.href='case-study-ai-experience.html'">
                     <div class="case-header" data-color="orange">🤖</div>
                     <div class="case-content">
                         <span class="case-tag">AI/UX</span>
                         <h3 class="case-title">AI Experience Standard</h3>
                         <p class="case-description">Responsible AI principles, UX patterns, trust models</p>
                         <div class="case-stats">
-                            <div class="stat"><strong>12</strong><span>Patterns</span></div>
-<div class="stat"><strong>6</strong><span>Principles</span></div>
-                        </div>
-                        <div class="case-footer">
-                            <span class="case-cta">View case study <span class="arrow" aria-hidden="true">→</span></span>
+                            <div class="stat">
+                                <strong>12</strong>
+                                <span>Patterns</span>
+                            </div>
+                            <div class="stat">
+                                <strong>6</strong>
+                                <span>Principles</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="card-spinner" aria-hidden="true"></div>
                 </div>
 
                 <!-- Case Study 6 -->
-                <div class="case-card" role="link" tabindex="0" data-href="case-study-enablement.html">
+                <div class="case-card" onclick="window.location.href='case-study-enablement.html'">
                     <div class="case-header" data-color="purple">🚀</div>
                     <div class="case-content">
                         <span class="case-tag">Enablement</span>
                         <h3 class="case-title">Designer Enablement</h3>
                         <p class="case-description">Mentorship, curriculum, education, AI-powered learning tools</p>
                         <div class="case-stats">
-                            <div class="stat"><strong>30+</strong><span>Designers</span></div>
-<div class="stat"><strong>100+</strong><span>Sessions</span></div>
-                        </div>
-                        <div class="case-footer">
-                            <span class="case-cta">View case study <span class="arrow" aria-hidden="true">→</span></span>
+                            <div class="stat">
+                                <strong>30+</strong>
+                                <span>Designers</span>
+                            </div>
+                            <div class="stat">
+                                <strong>100+</strong>
+                                <span>Sessions</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="card-spinner" aria-hidden="true"></div>
                 </div>
-</div>
+
+                <!-- Placeholder for Case Study 7 -->
+                <div class="case-card" style="opacity: 0.6; pointer-events: none;">
+                    <div class="case-header" data-color="cyan">🔮</div>
+                    <div class="case-content">
+                        <span class="case-tag">Coming Soon</span>
+                        <h3 class="case-title">Future Projects</h3>
+                        <p class="case-description">More detailed case studies coming soon</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Playing Around Section -->
+            <div class="playing-section">
+                <h3 style="font-family: var(--font-display); font-size: 28px; margin-bottom: var(--space-md); text-align: center;">What I'm Playing With</h3>
+                <p style="text-align: center; color: var(--color-text-secondary); margin-bottom: var(--space-lg);">Side projects and experiments that spark joy</p>
+                
+                <div class="playing-grid">
+                    <div class="playing-card">
+                        <div class="playing-card__icon">⚙</div>
+                        <h4 class="playing-card__title">Figma Plugin Creation</h4>
+                        <p class="playing-card__description">I'm creating a Figma plugin to automatically generate dev-ready tables based on provided styles and data.</p>
+                    </div>
+
+                    <div class="playing-card">
+                        <div class="playing-card__icon">🎨</div>
+                        <h4 class="playing-card__title">Motion Design</h4>
+                        <p class="playing-card__description">I'm experimenting with animation and motion design in Framer.</p>
+                    </div>
+
+                    <div class="playing-card">
+                        <div class="playing-card__icon">🏰</div>
+                        <h4 class="playing-card__title">Playground Design</h4>
+                        <p class="playing-card__description">I've got big dreams of designing and building a backyard castle fort for my kids (and maybe myself).</p>
+                    </div>
+
+                    <div class="playing-card">
+                        <div class="playing-card__icon">🧙</div>
+                        <h4 class="playing-card__title">AI Magic</h4>
+                        <p class="playing-card__description">I love to investigate how AI or other tools can help make my ideas come to life faster.</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -1610,10 +1517,10 @@ main, section { display: block !important; visibility: visible !important; }
             <div class="skills-grid">
                 <!-- Design Systems -->
                 <div class="skill-category">
-                    <div class="skill-categoryicon">⚡</div>
-                    <h3 class="skill-categorytitle">Design Systems & Governance</h3>
-                    <p class="skill-categorydescription">I design and steward systems that give teams shared language, reusable patterns, and clear decision rails.</p>
-                    <ul class="skill-categorylist">
+                    <div class="skill-category__icon">⚡</div>
+                    <h3 class="skill-category__title">Design Systems & Governance</h3>
+                    <p class="skill-category__description">I design and steward systems that give teams shared language, reusable patterns, and clear decision rails.</p>
+                    <ul class="skill-category__list">
                         <li>System architecture for multi-product platforms (MUI, AntD, custom)</li>
                         <li>Token systems, theming, and layout foundations</li>
                         <li>Component libraries with Figma ↔ code parity</li>
@@ -1623,10 +1530,10 @@ main, section { display: block !important; visibility: visible !important; }
 
                 <!-- Design Strategy -->
                 <div class="skill-category">
-                    <div class="skill-categoryicon">🧭</div>
-                    <h3 class="skill-categorytitle">Design Strategy & Leadership</h3>
-                    <p class="skill-categorydescription">I connect product vision, system architecture, and team execution so we're solving the right problems, at the right level.</p>
-                    <ul class="skill-categorylist">
+                    <div class="skill-category__icon">🧭</div>
+                    <h3 class="skill-category__title">Design Strategy & Leadership</h3>
+                    <p class="skill-category__description">I connect product vision, system architecture, and team execution so we're solving the right problems, at the right level.</p>
+                    <ul class="skill-category__list">
                         <li>Defining platform, system, and AI UX visions (RDS, DVS, AI Experience Standard)</li>
                         <li>Aligning design, product, engineering, and AI/ML stakeholders</li>
                         <li>Translating research and metrics into strategy and roadmaps</li>
@@ -1636,10 +1543,10 @@ main, section { display: block !important; visibility: visible !important; }
 
                 <!-- Platform & Product Design -->
                 <div class="skill-category">
-                    <div class="skill-categoryicon">🛠</div>
-                    <h3 class="skill-categorytitle">Platform & Product Design</h3>
-                    <p class="skill-categorydescription">I specialize in complex, data-dense technical platforms where reducing cognitive load directly translates to faster decisions, fewer errors, and better outcomes.</p>
-                    <ul class="skill-categorylist">
+                    <div class="skill-category__icon">🛠</div>
+                    <h3 class="skill-category__title">Platform & Product Design</h3>
+                    <p class="skill-category__description">I specialize in complex, data-dense technical platforms where reducing cognitive load directly translates to faster decisions, fewer errors, and better outcomes.</p>
+                    <ul class="skill-category__list">
                         <li>Observability &amp; telemetry dashboards: logs, events, metrics-like telemetry, detections, time-series signals</li>
                         <li>High-density data visualization: drill-in workflows, dependency graphs, time-series analysis</li>
                         <li>Developer tooling UX: CI/CD-adjacent interfaces, pipeline visibility, system health dashboards</li>
@@ -1810,269 +1717,98 @@ main, section { display: block !important; visibility: visible !important; }
 
     <!-- Footer/Contact -->
     <footer id="contact" class="footer">
-        <div class="footercontent">
-            <h2 class="footertitle">Let's Connect</h2>
-            <p class="footersubtitle">I'm currently exploring new opportunities, particularly in developer platforms and observability tooling. Always happy to talk technical UX, platform systems, or what it means to design for engineers.</p>
-            <div class="footerlinks">
+        <div class="footer__content">
+            <h2 class="footer__title">Let's Connect</h2>
+            <p class="footer__subtitle">I'm currently exploring new opportunities, particularly in developer platforms and observability tooling. Always happy to talk technical UX, platform systems, or what it means to design for engineers.</p>
+            <div class="footer__links">
                 <a href="mailto:becca.h.gore@gmail.com" class="btn btn-primary">Email Me</a>
-                <a href="https://linkedin.com/in/rebecca-havens-gore" class="btn btn-secondary" target="blank">LinkedIn</a>
+                <a href="https://linkedin.com/in/rebecca-havens-gore" class="btn btn-secondary" target="_blank">LinkedIn</a>
             </div>
-            <p class="footercopyright">&copy; 2025 Rebecca Gore. All rights reserved. | Designed with accessibility and systems thinking.</p>
+            <p class="footer__copyright">&copy; 2025 Rebecca Gore. All rights reserved. | Designed with accessibility and systems thinking.</p>
         </div>
     </footer>
 
-    </main>
-
     <script>
-(function () {
-  const root = document.documentElement;
+        // =========================
+        // Theme Toggle
+        // =========================
+        const html = document.documentElement;
+        const themeButtons = document.querySelectorAll('.theme-btn');
 
-  // -------------------------
-  // Theme
-  // -------------------------
-  const THEMEKEY = 'theme';
-  const mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+        themeButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const theme = btn.dataset.theme;
+                html.setAttribute('data-theme', theme);
 
-  function resolveAutoTheme() {
-    return (mq && mq.matches) ? 'dark' : 'light';
-  }
-
-  function applyTheme(pref) {
-    const effective = (pref === 'auto') ? resolveAutoTheme() : pref;
-    root.setAttribute('data-theme', effective);
-
-    // Update pressed states everywhere
-    const btns = document.querySelectorAll('.theme-btn');
-    btns.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.theme === pref)));
-    btns.forEach(b => b.classList.toggle('active', b.dataset.theme === pref));
-
-    // Dropdown items
-    const items = document.querySelectorAll('.theme-dropdown-item');
-    items.forEach(i => i.classList.toggle('active', i.dataset.theme === pref));
-  }
-
-  function getSavedPref() {
-    try { return localStorage.getItem(THEMEKEY) || 'auto'; } catch(e) { return 'auto'; }
-  }
-
-  function savePref(pref) {
-    try { localStorage.setItem(THEMEKEY, pref); } catch(e) {}
-  }
-
-  let pref = getSavedPref();
-  applyTheme(pref);
-
-  // React to OS theme changes when in auto
-  if (mq) {
-    mq.addEventListener ? mq.addEventListener('change', () => { if (getSavedPref() === 'auto') applyTheme('auto'); })
-                       : mq.addListener && mq.addListener(() => { if (getSavedPref() === 'auto') applyTheme('auto'); });
-  }
-
-  function onThemeSelect(nextPref) {
-    pref = nextPref;
-    savePref(pref);
-    applyTheme(pref);
-    closeThemeDropdown();
-  }
-
-  document.querySelectorAll('.theme-btn').forEach(btn => {
-    btn.addEventListener('click', () => onThemeSelect(btn.dataset.theme));
-  });
-  document.querySelectorAll('.theme-dropdown-item').forEach(item => {
-    item.addEventListener('click', () => onThemeSelect(item.dataset.theme));
-  });
-
-  // Theme dropdown
-  const dropdown = document.querySelector('.theme-dropdown');
-  const dropdownBtn = dropdown ? dropdown.querySelector('.theme-dropdown-button') : null;
-  const dropdownMenu = dropdown ? dropdown.querySelector('.theme-dropdown-menu') : null;
-
-  function openThemeDropdown() {
-    if (!dropdownBtn || !dropdownMenu) return;
-    dropdownMenu.classList.add('active');
-    dropdownBtn.setAttribute('aria-expanded', 'true');
-  }
-  function closeThemeDropdown() {
-    if (!dropdownBtn || !dropdownMenu) return;
-    dropdownMenu.classList.remove('active');
-    dropdownBtn.setAttribute('aria-expanded', 'false');
-  }
-  if (dropdownBtn && dropdownMenu) {
-    dropdownBtn.addEventListener('click', () => {
-      dropdownMenu.classList.contains('active') ? closeThemeDropdown() : openThemeDropdown();
-    });
-    document.addEventListener('click', (e) => {
-      if (!dropdown.contains(e.target)) closeThemeDropdown();
-    });
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeThemeDropdown();
-    });
-  }
-
-  // -------------------------
-  // Mobile Nav (index only)
-  // -------------------------
-  const hamburger = document.querySelector('.hamburger');
-  const navMenu = document.querySelector('.nav-menu');
-  const overlay = document.querySelector('.nav-overlay');
-
-  function setNavOpen(open) {
-    if (!hamburger || !navMenu || !overlay) return;
-    hamburger.classList.toggle('active', open);
-    navMenu.classList.toggle('active', open);
-    overlay.classList.toggle('active', open);
-    hamburger.setAttribute('aria-expanded', String(open));
-    navMenu.setAttribute('aria-hidden', String(!open));
-    if (open) {
-      navMenu.removeAttribute('inert');
-      document.body.style.overflow = 'hidden';
-      // focus first link
-      const firstFocusable = navMenu.querySelector('a,button');
-      firstFocusable && firstFocusable.focus();
-    } else {
-      navMenu.setAttribute('inert', '');
-      document.body.style.overflow = '';
-      hamburger.focus();
-    }
-  }
-
-  if (hamburger && navMenu && overlay) {
-    hamburger.addEventListener('click', () => setNavOpen(!navMenu.classList.contains('active')));
-    overlay.addEventListener('click', () => setNavOpen(false));
-
-    navMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setNavOpen(false)));
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') setNavOpen(false);
-    });
-
-    // init states
-    hamburger.setAttribute('aria-expanded', 'false');
-    navMenu.setAttribute('aria-hidden', 'true');
-    navMenu.setAttribute('inert', '');
-    overlay.setAttribute('aria-hidden', 'true');
-  }
-})();
-
-
-// ── Case card click feedback + loading state ──
-(function () {
-  const cards = document.querySelectorAll('a.case-card[href]');
-  if (!cards.length) return;
-
-  function isSamePageHash(href) {
-    return href && href.startsWith('#');
-  }
-
-  cards.forEach(card => {
-    // Ensure affordance text exists (idempotent)
-    const content = card.querySelector('.case-content');
-    if (content && !content.querySelector('.case-cta')) {
-      const cta = document.createElement('div');
-      cta.className = 'case-cta';
-      cta.innerHTML = 'View case study <span class="arrow" aria-hidden="true">→</span>';
-      content.appendChild(cta);
-    }
-    if (!card.querySelector('.card-spinner')) {
-      const spinner = document.createElement('div');
-      spinner.className = 'card-spinner';
-      spinner.setAttribute('aria-hidden', 'true');
-      card.appendChild(spinner);
-    }
-
-    card.addEventListener('click', (e) => {
-      const href = card.getAttribute('href');
-      if (!href || isSamePageHash(href)) return;
-
-      // Visual feedback
-      e.preventDefault();
-      card.classList.add('is-loading');
-
-      // Navigate after a short tick so feedback is visible
-      window.setTimeout(() => { window.location.href = href; }, 120);
-    });
-  });
-})();
-</script>
-<script>
-        (function() {
-            var html = document.documentElement;
-            var lbls = { auto:"Auto", light:"Light", dark:"Dark", "high-contrast":"Contrast" };
-            function sys() { return (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light"; }
-            function apply(pref) {
-                html.setAttribute("data-theme", pref === "auto" ? sys() : pref);
-                document.querySelectorAll(".theme-btn").forEach(function(b) {
-                    var on = b.dataset.theme === pref;
-                    b.classList.toggle("active", on);
-                    b.setAttribute("aria-pressed", on ? "true" : "false");
+                // Update all theme buttons
+                document.querySelectorAll('.theme-btn').forEach(b => {
+                    b.classList.toggle('active', b.dataset.theme === theme);
                 });
-                document.querySelectorAll(".theme-dropdown-item").forEach(function(i) { i.classList.toggle("active", i.dataset.theme === pref); });
-                var l = document.querySelector(".theme-dropdown-label");
-                if (l) l.textContent = lbls[pref] || "Auto";
+
+                // Save preference
+                try {
+                    localStorage.setItem('theme', theme);
+                } catch (e) {
+                    // ignore if storage is blocked
+                }
+            });
+        });
+
+        // Load saved theme
+        try {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                html.setAttribute('data-theme', savedTheme);
+                document.querySelectorAll('.theme-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.theme === savedTheme);
+                });
             }
-            document.querySelectorAll(".theme-btn").forEach(function(b) {
-                b.addEventListener("click", function() { apply(b.dataset.theme); try { localStorage.setItem("theme", b.dataset.theme); } catch(e){} });
-            });
-            var db = document.querySelector(".theme-dropdown-button");
-            var dm = document.querySelector(".theme-dropdown-menu");
-            if (db && dm) {
-                db.addEventListener("click", function(e) { e.stopPropagation(); var open = dm.classList.toggle("open"); db.setAttribute("aria-expanded", open ? "true" : "false"); });
-                document.addEventListener("click", function() { dm.classList.remove("open"); if(db) db.setAttribute("aria-expanded","false"); });
-            }
-            document.querySelectorAll(".theme-dropdown-item").forEach(function(i) {
-                i.addEventListener("click", function() {
-                    apply(i.dataset.theme);
-                    try { localStorage.setItem("theme", i.dataset.theme); } catch(e){}
-                    if (dm) dm.classList.remove("open"); if (db) db.setAttribute("aria-expanded","false");
-                });
-            });
-            if (window.matchMedia) window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function() {
-                try { if ((localStorage.getItem("theme") || "auto") === "auto") apply("auto"); } catch(e){} });
-            try { apply(localStorage.getItem("theme") || "auto"); } catch(e) { apply("auto"); }
-        })();
-        var hdr = document.querySelector(".header");
-        if (hdr) window.addEventListener("scroll", function() { hdr.classList.toggle("scrolled", window.pageYOffset > 0); });
-    </script>
-    <script>
-        /* Outcomes Gallery Theme Switcher */
-        (function() {
-            var btns = document.querySelectorAll('.outcomes-theme-btn');
-            var arcs = document.querySelectorAll('.outcomes-arc');
-            btns.forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    var theme = btn.getAttribute('data-gallery');
-                    btns.forEach(function(b) {
-                        b.classList.toggle('active', b === btn);
-                    });
-                    arcs.forEach(function(arc) {
-                        if (arc.getAttribute('data-gallery-theme') === theme) {
-                            arc.removeAttribute('hidden');
-                        } else {
-                            arc.setAttribute('hidden', '');
-                        }
-                    });
-                });
-            });
-        })();
-    </script>
+        } catch (e) {
+            // ignore
+        }
 
-        <script>
-        // handleCaseCardNavigation
-        (function(){
-          const cards = document.querySelectorAll('.case-card[data-href]');
-          cards.forEach(card => {
-            const href = card.getAttribute('data-href');
-            const go = () => {
-              card.classList.add('is-loading');
-              window.setTimeout(() => { window.location.href = href; }, 140);
-            };
-            card.addEventListener('click', (e) => { e.preventDefault(); go(); });
-            card.addEventListener('keydown', (e) => {
-              if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); }
+        // =========================
+        // Mobile Navigation Toggle
+        // =========================
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+        const navOverlay = document.querySelector('.nav-overlay');
+        const navLinks = document.querySelectorAll('.nav-menu .nav__link');
+
+        function toggleNav() {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+            navOverlay.classList.toggle('active');
+            document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
+        }
+
+        if (hamburger && navMenu && navOverlay) {
+            hamburger.addEventListener('click', toggleNav);
+            navOverlay.addEventListener('click', toggleNav);
+
+            // Close menu when clicking a link
+            navLinks.forEach(link => {
+                link.addEventListener('click', toggleNav);
             });
-          });
-        })();
-        </script>
-        
+        }
+
+        // =========================
+        // Smooth Scroll
+        // =========================
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const target = document.querySelector(this.getAttribute('href'));
+                if (!target) return;
+                e.preventDefault();
+                const yOffset = -80; // offset for sticky header
+                const y = target.getBoundingClientRect().top + window.pageYOffset + yOffset;
+
+                window.scrollTo({
+                    top: y,
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
 </body>
 </html>
