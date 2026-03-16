@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Design Forum & UX Standards &mdash; Rebecca Havens Gore</title>
+    <title>Design Forum (governance for platform quality) & UX Standards &mdash; Rebecca Havens Gore</title>
     <meta name="description" content="Case study: Operationalizing quality, alignment, and governance across Rapid7's design organization">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -275,17 +275,456 @@
         transform: none !important;
     }
 }
-        </style>
+        
+
+/* Logo mark */
+.header__logo .logo-mark { flex: 0 0 auto; }
+.header__logo span.logo-text { display: inline-block; }
+
+/* Ensure skip link is present & visible on focus */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 16px;
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  padding: 8px 16px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  border: 2px solid var(--color-accent);
+  z-index: 9999;
+  transition: top var(--motion-medium, 200ms);
+}
+.skip-link:focus { top: 16px; outline: 3px solid var(--color-accent); outline-offset: 3px; }
+
+/* Main anchor offset so skip-link / logo jump lands nicely */
+#main-content { scroll-margin-top: 120px; }
+
+
+/* Ensure logo text uses display font + text color (not link blue) */
+.header__logo { color: var(--color-text-primary) !important; font-family: var(--font-display); }
+.header__logo:hover { color: var(--color-text-primary); }
+.header__logo .logo-text { color: var(--color-text-primary); }
+
+
+
+/* === Synced header/theme/navigation from original portfolio === */
+.header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--color-bg-secondary);
+            border-bottom: 1px solid var(--color-border);
+            z-index: 1000;
+            padding: var(--space-md) var(--grid-margin);
+            transition: all var(--transition-base);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        .header.scrolled {
+            background: rgba(250, 250, 250, 0.8);
+            box-shadow: 0 4px 24px rgba(255, 107, 43, 0.1);
+        }
+        
+        [data-theme="dark"] .header.scrolled {
+            background: rgba(26, 26, 26, 0.8);
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--color-accent) 0%, #FF8C5C 25%, #6B46FF 50%, #2BBFFF 75%, var(--color-accent) 100%);
+            background-size: 200% 100%;
+            opacity: 0;
+            transition: opacity var(--transition-base);
+            animation: gradientFlow 4s linear infinite;
+        }
+        
+        .header.scrolled::before {
+            opacity: 1;
+        }
+        
+        @keyframes gradientFlow {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+        
+        .header__container {
+            max-width: 1440px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header__logo {
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color var(--transition-fast);
+        }
+        
+        .back-link:hover {
+            color: var(--color-accent);
+        }
+        
+        .back-link::before {
+            content: '\2190';
+            font-size: 20px;
+        }
+        
+        /* Case Study Hero */
+        .case-hero {
+            min-height: 70vh;
+            background: linear-gradient(135deg, #FF6B2B 0%, #FF8C5C 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding-top: 100px;
+        }
+        
+        .case-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+        
+        .case-hero__content {
+            max-width: 900px;
+            text-align: center;
+            padding: var(--space-2xl) var(--space-lg);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .case-hero__eyebrow {
+            font-size: var(--type-small);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+            margin-bottom: var(--space-md);
+        }
+        
+        .case-hero__title {
+            font-family: var(--font-display);
+            font-size: clamp(36px, 6vw, 52px);
+            font-weight: 900;
+            color: white;
+            margin-bottom: var(--space-md);
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+        
+        .case-hero__subtitle {
+            font-size: 22px;
+            color: rgba(255, 255, 255, 0.95);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+        
+        .case-hero__tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-top: var(--space-lg);
+        }
+        
+        .case-hero__tag {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Meta Section */
+        .case-meta {
+            background: var(--color-bg-secondary);
+            padding: var(--space-xl) var(--grid-margin);
+            border-bottom: 1px solid var(--color-border);
+        }
+        
+        .case-meta__container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-lg);
+        }
+        
+        .meta-item {
+            padding: var(--space-md);
+            background: var(--color-bg-primary);
+            border-radius: 12px;
+            border: 1px solid var(--color-border);
+        }
+        
+        .meta-item__label {
+            font-size: var(--type-small);
+            color: var(--color-text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .meta-item__value {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+        
+        /* Content Section */
+        .case-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: var(--space-2xl) var(--space-lg);
+        }
+        
+        .case-section {
+            margin-bottom: var(--space-2xl);
+        }
+        
+        .case-section__title {
+            font-family: var(--font-display);
+            font-size: var(--type-h2);
+            font-weight: 700;
+            margin-bottom: var(--space-md);
+            color: var(--color-text-primary);
+            position: relative;
+            display: inline-block;
+        }
+        
+        .case-section__title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--color-accent), #FF8C5C);
+            border-radius: 2px;
+        }
+        
+        .case-section p {
+            margin-bottom: var(--space-md);
+            line-height: 1.8;
+            color: var(--color-text-secondary);
+        }
+        
+        .case-section ul {
+            list-style: none;
+            padding-left: 0;
+            margin-bottom: var(--space-md);
+        }
+        
+        .case-section ul li {
+            margin-bottom: var(--space-sm);
+            padding-left: 28px;
+            position: relative;
+            line-height: 1.7;
+            color: var(--color-text-secondary);
+        }
+        
+        .case-section ul li::before {
+            content: '\25B8';
+            position: absolute;
+            left: 0;
+            color: var(--color-accent);
+            font-weight: bold;
+        }
+        
+        .case-section h3 {
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 700;
+            margin-top: var(--space-lg);
+            margin-bottom: var(--space-md);
+            color: var(--color-text-primary);
+        }
+        
+        /* Impact Section */
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-lg);
+            margin-top: var(--space-xl);
+        }
+        
+        .impact-card {
+            padding: var(--space-lg);
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .impact-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--color-accent), #FF8C5C);
+        }
+        
+        .impact-card__icon {
+            font-size: 32px;
+            margin-bottom: var(--space-sm);
+        }
+        
+        .impact-card__title {
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: var(--space-sm);
+            color: var(--color-text-primary);
+        }
+        
+        .impact-card__value {
+            font-family: var(--font-display);
+            font-size: 36px;
+            font-weight: 900;
+            color: var(--color-accent);
+            margin-bottom: 8px;
+            line-height: 1;
+        }
+        
+        .impact-card__description {
+            font-size: 16px;
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+        }
+        
+        /* Quote Block */
+        .quote-block {
+            margin: var(--space-xl) 0;
+            padding: var(--space-lg);
+            background: var(--color-bg-tertiary);
+            border-left: 4px solid var(--color-accent);
+            border-radius: 8px;
+        }
+        
+        .quote-block__text {
+            font-size: 20px;
+            font-style: italic;
+            color: var(--color-text-primary);
+            line-height: 1.6;
+        }
+        
+        /* Navigation Footer */
+        
+.skip-link {
+            position: absolute; top: -40px; left: 16px;
+            background: var(--color-bg-secondary); color: var(--color-text-primary);
+            padding: 8px 16px; border-radius: 6px; text-decoration: none;
+            font-weight: 600; border: 2px solid var(--color-accent); z-index: 9999;
+            transition: top 200ms;
+        }
+        .skip-link:focus { top: 16px; outline: 3px solid var(--color-accent); outline-offset: 3px; }
+        #case-main { scroll-margin-top: 10
+.case-nav {
+            background: var(--color-bg-secondary);
+            border-top: 1px solid var(--color-border);
+            padding: var(--space-xl) var(--grid-margin);
+            margin-top: var(--space-2xl);
+        }
+        
+        .case-nav__container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: var(--space-lg);
+        }
+        
+        .case-nav__link {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 32px;
+            background: var(--color-accent);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all var(--transition-fast);
+        }
+        
+        .case-nav__link:hover {
+            background: var(--color-accent-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            :root {
+                --grid-margin: 32px;
+                --type-h1: 42px;
+                --type-h2: 28px;
+            }
+            
+            .case-meta__container {
+                grid-template-columns: 1fr;
+            }
+            
+            .impact-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .case-nav__contai
+/* Netflix build: ensure logo text matches original styling */
+.header__logo { color: var(--color-text-primary); text-decoration: none; font-family: var(--font-display); }
+.header__logo:hover { color: var(--color-text-primary); }
+.header__logo .logo-text { color: var(--color-text-primary); }
+
+</style>
 </head>
 <body>
-    <a href="#case-main" class="skip-link">Skip to main content</a>
+    <!-- FIX #5: Skip link -->
+<a href="#main-content" class="skip-link">Skip to main content</a>
 
     <header class="header" role="banner">
         <div class="header__container">
-            <a href="index.html" class="header__logo" style="display:flex;align-items:center;gap:8px;">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="28" height="28" aria-hidden="true" focusable="false" style="flex-shrink:0;border-radius:6px;"><defs><linearGradient id="logo-grad-df" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#FF6B2B"/><stop offset="100%" stop-color="#6B46FF"/></linearGradient></defs><rect width="32" height="32" rx="7" fill="url(#logo-grad-df)"/><text x="16" y="22" text-anchor="middle" fill="#fff" font-family="Georgia,serif" font-weight="700" font-size="14" letter-spacing="-0.5">RHG</text></svg>
-                Rebecca Havens Gore
-            </a>
+            <a href="index.html#main-content" class="header__logo">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="28" height="28" aria-hidden="true" focusable="false" style="flex-shrink:0;border-radius:6px;"><defs><linearGradient id="logo-grad-rds" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#FF6B2B"/><stop offset="100%" stop-color="#6B46FF"/></linearGradient></defs><rect width="32" height="32" rx="7" fill="url(#logo-grad-rds)"/><text x="16" y="22" text-anchor="middle" fill="#fff" font-family="Georgia,serif" font-weight="700" font-size="14" letter-spacing="-0.5">RHG</text></svg>
+                <span class="logo-text">Rebecca Havens Gore</span></a>
             <nav class="header__nav" aria-label="Site navigation">
                 <div class="theme-controls" role="group" aria-label="Color theme">
                     <button class="theme-btn" data-theme="auto" aria-label="Use system theme" aria-pressed="false"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4C12.82 3.04 12.42 3 12 3zm0-2c6.08 0 11 4.92 11 11s-4.92 11-11 11S1 18.08 1 12 5.92 1 12 1z"/></svg> Auto</button>
@@ -308,12 +747,52 @@
             </nav>
         </div>
     </header>
+
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Skip link -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+        <nav class="header__nav" aria-label="Case study navigation">
+          <ul class="nav__links">
+            <li><a href="index.html#work" class="nav__link">Back to Portfolio</a></li>
+            <li><a href="index.html#contact" class="nav__link">Contact</a></li>
+        </ul>
+          <div class="theme-controls" role="group" aria-label="Theme">
+  <button class="theme-btn" data-theme="auto" aria-pressed="false" type="button">
+    <span aria-hidden="true">🌓</span><span>Auto</span>
+  </button>
+  <button class="theme-btn" data-theme="light" aria-pressed="false" type="button">
+    <span aria-hidden="true">☀️</span><span>Light</span>
+  </button>
+  <button class="theme-btn" data-theme="dark" aria-pressed="false" type="button">
+    <span aria-hidden="true">🌙</span><span>Dark</span>
+  </button>
+  <button class="theme-btn" data-theme="high-contrast" aria-pressed="false" type="button">
+    <span aria-hidden="true">◑</span><span>Contrast</span>
+  </button>
+</div>
+        </nav>
+
+        <div class="theme-dropdown">
+  <button class="theme-dropdown-button" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Theme">
+    <span aria-hidden="true">🌓</span> Theme
+  </button>
+  <div class="theme-dropdown-menu" role="menu">
+    <button class="theme-dropdown-item" data-theme="auto" type="button" role="menuitem">🌓 Auto</button>
+    <button class="theme-dropdown-item" data-theme="light" type="button" role="menuitem">☀️ Light</button>
+    <button class="theme-dropdown-item" data-theme="dark" type="button" role="menuitem">🌙 Dark</button>
+    <button class="theme-dropdown-item" data-theme="high-contrast" type="button" role="menuitem">◑ Contrast</button>
+  </div>
+</div>
+      </div>
+    </header>
     
-    <main id="case-main">
+    <main id="main-content" tabindex="-1">
         <section class="case-hero">
             <div class="case-hero__content">
                 <p class="case-hero__eyebrow">Case Study 03</p>
-                <h1 class="case-hero__title">Design Forum & UX Standards Framework</h1>
+                <h1 class="case-hero__title">Design Forum (governance for platform quality) & UX Standards Framework</h1>
                 <p class="case-hero__subtitle">Operationalizing quality, alignment, and governance across Rapid7's design organization</p>
                 <div class="case-hero__tags">
                     <span class="case-hero__tag">Design Ops</span>
@@ -369,21 +848,21 @@
                             assets/images/case-studies/forum/F-01-1600w.png 1600w,
                             assets/images/case-studies/forum/F-01-2000w.png 2000w"
                     sizes="100vw"
-                    alt="Design Forum & UX Standards — hero overview of the governance framework"
+                    alt="Design Forum (governance for platform quality) & UX Standards — hero overview of the governance framework"
                     loading="eager"
                     fetchpriority="high"
                     decoding="async"
                     width="1280"
                     height="800">
             </picture>
-            <figcaption>Design Forum & UX Standards — scalable governance and decision-making framework for Rapid7's design org</figcaption>
+            <figcaption>Design Forum (governance for platform quality) & UX Standards — scalable governance and decision-making framework for Rapid7's design org</figcaption>
         </figure>
 
         <article class="case-content">
             <section class="case-section">
                 <h2 class="case-section__title">Executive Summary</h2>
                 <p>As Rapid7 scaled across multiple product lines, design quality diverged due to fragmented processes, inconsistent decision-making, and lack of shared governance. Designers were making major UX decisions in Slack threads, design drift increased release risk, and teams lacked visibility into standards or precedent.</p>
-                <p>I led the design and rollout of the Design Forum and the Rapid7 UX Standards Framework, establishing scalable governance, structured decision processes, and transparent alignment mechanisms. Together with UX leadership, engineering partners, and design system contributors, we created an operational foundation that improved accessibility, consistency, and cross-team cohesion across the entire design org.</p>
+                <p>I led the design and rollout of the Design Forum (governance for platform quality) and the Rapid7 UX Standards Framework, establishing scalable governance, structured decision processes, and transparent alignment mechanisms. Together with UX leadership, engineering partners, and design system contributors, we created an operational foundation that improved accessibility, consistency, and cross-team cohesion across the entire design org.</p>
             </section>
             
             <section class="case-section">
@@ -486,7 +965,7 @@
                             assets/images/case-studies/forum/F-03-1600w.png 1600w,
                             assets/images/case-studies/forum/F-03-2000w.png 2000w"
                     sizes="100vw"
-                    alt="Strategy & Architecture — three-pillar governance framework for the Design Forum"
+                    alt="Strategy & Architecture — three-pillar governance framework for the Design Forum (governance for platform quality)"
                     loading="lazy"
                     decoding="async"
                     width="1280"
@@ -500,10 +979,10 @@
                 <h2 class="case-section__title">Strategy & Architecture</h2>
                 <p>The strategy centered around three pillars:</p>
                 
-                <h3>A. Structured Governance &mdash; Design Forum</h3>
-                <p>I created the Design Forum, a recurring, formalized decision-making body for platform-level UX patterns.</p>
+                <h3>A. Structured Governance &mdash; Design Forum (governance for platform quality)</h3>
+                <p>I created the Design Forum (governance for platform quality), a recurring, formalized decision-making body for platform-level UX patterns.</p>
                 
-                <p><strong>Design Forum Components:</strong></p>
+                <p><strong>Design Forum (governance for platform quality) Components:</strong></p>
                 <ul>
                     <li>Recurring 30-minute sessions</li>
                     <li>Cross-disciplinary attendance</li>
@@ -567,20 +1046,20 @@
                             assets/images/case-studies/forum/F-04-1600w.png 1600w,
                             assets/images/case-studies/forum/F-04-2000w.png 2000w"
                     sizes="100vw"
-                    alt="Implementation — Design Forum launch and proposal pipeline in action"
+                    alt="Implementation — Design Forum (governance for platform quality) launch and proposal pipeline in action"
                     loading="lazy"
                     decoding="async"
                     width="1280"
                     height="800">
             </picture>
-            <figcaption>Implementation — Design Forum launch, proposal pipeline, and standards integration with RDS</figcaption>
+            <figcaption>Implementation — Design Forum (governance for platform quality) launch, proposal pipeline, and standards integration with RDS</figcaption>
         </figure>
 
         <article class="case-content">
             <section class="case-section">
                 <h2 class="case-section__title">Implementation</h2>
                 
-                <h3>Design Forum Launch</h3>
+                <h3>Design Forum (governance for platform quality) Launch</h3>
                 <p>I facilitated cross-functional workshop sessions to align expectations, refine workflows, and practice using the FOG model on real design proposals.</p>
                 
                 <h3>Proposal Pipeline</h3>
@@ -599,7 +1078,7 @@
                 <p>I partnered with the design system team to ensure:</p>
                 <ul>
                     <li>Every RDS component adhered to the UX Standards</li>
-                    <li>Every pattern proposal was reviewed through Design Forum</li>
+                    <li>Every pattern proposal was reviewed through Design Forum (governance for platform quality)</li>
                     <li>Every decision updated system documentation</li>
                 </ul>
                 
@@ -637,13 +1116,13 @@
                             assets/images/case-studies/forum/F-05-1600w.png 1600w,
                             assets/images/case-studies/forum/F-05-2000w.png 2000w"
                     sizes="100vw"
-                    alt="Design Forum in action — governance process and communication workflows"
+                    alt="Design Forum (governance for platform quality) in action — governance process and communication workflows"
                     loading="lazy"
                     decoding="async"
                     width="1280"
                     height="800">
             </picture>
-            <figcaption>Design Forum in action — governance process and communication workflows enabling org-wide alignment</figcaption>
+            <figcaption>Design Forum (governance for platform quality) in action — governance process and communication workflows enabling org-wide alignment</figcaption>
         </figure>
 
         <!-- 06: Before Impact -->
@@ -788,7 +1267,7 @@
                             assets/images/case-studies/forum/F-08-1600w.png 1600w,
                             assets/images/case-studies/forum/F-08-2000w.png 2000w"
                     sizes="100vw"
-                    alt="What I'd Do Next — future vision for the Design Forum and UX governance"
+                    alt="What I'd Do Next — future vision for the Design Forum (governance for platform quality) and UX governance"
                     loading="lazy"
                     decoding="async"
                     width="1280"
@@ -803,7 +1282,7 @@
                 <ul>
                     <li>Introduce automated governance audits using AI + MCP</li>
                     <li>Add design health scorecards per product</li>
-                    <li>Integrate accessibility automated checks directly into Design Forum</li>
+                    <li>Integrate accessibility automated checks directly into Design Forum (governance for platform quality)</li>
                     <li>Expand into content standards + voice & tone</li>
                     <li>Create pattern usage analytics dashboards</li>
                 </ul>
@@ -868,7 +1347,7 @@
 
         <nav class="case-nav" aria-label="Case study navigation">
             <div class="case-nav__container">
-                <a href="case-study-dvs.html" class="case-nav__link">&larr; Previous: Data Visualization</a>
+                <a href="index.html#work" class="case-nav__link">&larr; Back to Portfolio</a>
                 <a href="case-study-unified-platform.html" class="case-nav__link">Next: Unified Platform &rarr;</a>
             </div>
         </nav>
@@ -936,47 +1415,197 @@
         })();
     </script>
     <script>
-        /* Mini Table of Contents */
-        (function() {
-            var sections = Array.prototype.slice.call(document.querySelectorAll('h2.case-section__title'));
-            if (!sections.length) return;
-            sections.forEach(function(h) {
-                if (!h.id) h.id = h.textContent.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+(function () {
+  const root = document.documentElement;
+
+  // -------------------------
+  // Theme
+  // -------------------------
+  const THEME_KEY = 'theme';
+  const mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+
+  function resolveAutoTheme() {
+    return (mq && mq.matches) ? 'dark' : 'light';
+  }
+
+  function applyTheme(pref) {
+    const effective = (pref === 'auto') ? resolveAutoTheme() : pref;
+    root.setAttribute('data-theme', effective);
+
+    // Update pressed states everywhere
+    const btns = document.querySelectorAll('.theme-btn');
+    btns.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.theme === pref)));
+    btns.forEach(b => b.classList.toggle('active', b.dataset.theme === pref));
+
+    // Dropdown items
+    const items = document.querySelectorAll('.theme-dropdown-item');
+    items.forEach(i => i.classList.toggle('active', i.dataset.theme === pref));
+  }
+
+  function getSavedPref() {
+    try { return localStorage.getItem(THEME_KEY) || 'auto'; } catch(e) { return 'auto'; }
+  }
+
+  function savePref(pref) {
+    try { localStorage.setItem(THEME_KEY, pref); } catch(e) {}
+  }
+
+  let pref = getSavedPref();
+  applyTheme(pref);
+
+  // React to OS theme changes when in auto
+  if (mq) {
+    mq.addEventListener ? mq.addEventListener('change', () => { if (getSavedPref() === 'auto') applyTheme('auto'); })
+                       : mq.addListener && mq.addListener(() => { if (getSavedPref() === 'auto') applyTheme('auto'); });
+  }
+
+  function onThemeSelect(nextPref) {
+    pref = nextPref;
+    savePref(pref);
+    applyTheme(pref);
+    closeThemeDropdown();
+  }
+
+  document.querySelectorAll('.theme-btn').forEach(btn => {
+    btn.addEventListener('click', () => onThemeSelect(btn.dataset.theme));
+  });
+  document.querySelectorAll('.theme-dropdown-item').forEach(item => {
+    item.addEventListener('click', () => onThemeSelect(item.dataset.theme));
+  });
+
+  // Theme dropdown
+  const dropdown = document.querySelector('.theme-dropdown');
+  const dropdownBtn = dropdown ? dropdown.querySelector('.theme-dropdown-button') : null;
+  const dropdownMenu = dropdown ? dropdown.querySelector('.theme-dropdown-menu') : null;
+
+  function openThemeDropdown() {
+    if (!dropdownBtn || !dropdownMenu) return;
+    dropdownMenu.classList.add('active');
+    dropdownBtn.setAttribute('aria-expanded', 'true');
+  }
+  function closeThemeDropdown() {
+    if (!dropdownBtn || !dropdownMenu) return;
+    dropdownMenu.classList.remove('active');
+    dropdownBtn.setAttribute('aria-expanded', 'false');
+  }
+  if (dropdownBtn && dropdownMenu) {
+    dropdownBtn.addEventListener('click', () => {
+      dropdownMenu.classList.contains('active') ? closeThemeDropdown() : openThemeDropdown();
+    });
+    document.addEventListener('click', (e) => {
+      if (!dropdown.contains(e.target)) closeThemeDropdown();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeThemeDropdown();
+    });
+  }
+
+  // -------------------------
+  // Mobile Nav (index only)
+  // -------------------------
+  const hamburger = document.querySelector('.hamburger');
+  const navMenu = document.querySelector('.nav-menu');
+  const overlay = document.querySelector('.nav-overlay');
+
+  function setNavOpen(open) {
+    if (!hamburger || !navMenu || !overlay) return;
+    hamburger.classList.toggle('active', open);
+    navMenu.classList.toggle('active', open);
+    overlay.classList.toggle('active', open);
+    hamburger.setAttribute('aria-expanded', String(open));
+    navMenu.setAttribute('aria-hidden', String(!open));
+    if (open) {
+      navMenu.removeAttribute('inert');
+      document.body.style.overflow = 'hidden';
+      // focus first link
+      const firstFocusable = navMenu.querySelector('a,button');
+      firstFocusable && firstFocusable.focus();
+    } else {
+      navMenu.setAttribute('inert', '');
+      document.body.style.overflow = '';
+      hamburger.focus();
+    }
+  }
+
+  if (hamburger && navMenu && overlay) {
+    hamburger.addEventListener('click', () => setNavOpen(!navMenu.classList.contains('active')));
+    overlay.addEventListener('click', () => setNavOpen(false));
+
+    navMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setNavOpen(false)));
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') setNavOpen(false);
+    });
+
+    // init states
+    hamburger.setAttribute('aria-expanded', 'false');
+    navMenu.setAttribute('aria-hidden', 'true');
+    navMenu.setAttribute('inert', '');
+    overlay.setAttribute('aria-hidden', 'true');
+  }
+})();
+</script>
+<script>
+// ── Theme System ──
+        const html = document.documentElement;
+        const themeNames = { auto: 'Auto', light: 'Light', dark: 'Dark', 'high-contrast': 'Contrast' };
+
+        function getSystemTheme() {
+            return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+
+        function applyTheme(pref) {
+            const actual = pref === 'auto' ? getSystemTheme() : pref;
+            html.setAttribute('data-theme', actual);
+
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                const active = btn.dataset.theme === pref;
+                btn.classList.toggle('active', active);
+                btn.setAttribute('aria-pressed', active ? 'true' : 'false');
             });
-            var priority = ['impact', 'artifact'];
-            var toc = document.createElement('nav');
-            toc.className = 'case-toc';
-            toc.setAttribute('aria-label', 'Page sections');
-            var lbl = document.createElement('div');
-            lbl.className = 'case-toc__label';
-            lbl.textContent = 'On this page';
-            toc.appendChild(lbl);
-            var list = document.createElement('ul');
-            list.className = 'case-toc__list';
-            sections.forEach(function(h) {
-                var li = document.createElement('li');
-                var a = document.createElement('a');
-                a.href = '#' + h.id;
-                a.className = 'case-toc__link';
-                a.textContent = h.textContent.trim();
-                if (priority.some(function(p) { return h.id.indexOf(p) !== -1; })) a.setAttribute('data-priority', 'high');
-                li.appendChild(a);
-                list.appendChild(li);
+            document.querySelectorAll('.theme-dropdown-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.theme === pref);
             });
-            toc.appendChild(list);
-            document.body.appendChild(toc);
-            var hero = document.querySelector('.case-hero');
-            var links = toc.querySelectorAll('.case-toc__link');
-            function updateVisibility() { toc.classList.toggle('visible', !hero || hero.getBoundingClientRect().bottom < 0); }
-            function updateActive() {
-                var scrollY = window.pageYOffset + 140;
-                var current = null;
-                sections.forEach(function(h) { if (h.offsetTop <= scrollY) current = h.id; });
-                links.forEach(function(a) { a.classList.toggle('toc-active', a.getAttribute('href') === '#' + current); });
-            }
-            window.addEventListener('scroll', function() { updateVisibility(); updateActive(); }, { passive: true });
-            updateVisibility(); updateActive();
-        })();
-    </script>
+            const label = document.querySelector('.theme-dropdown-label');
+            if (label) label.textContent = themeNames[pref] || 'Auto';
+        }
+
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                applyTheme(btn.dataset.theme);
+                try { localStorage.setItem('theme', btn.dataset.theme); } catch(e) {}
+            });
+        });
+
+        const dropBtn = document.querySelector('.theme-dropdown-button');
+        const dropMenu = document.querySelector('.theme-dropdown-menu');
+        if (dropBtn && dropMenu) {
+            dropBtn.addEventListener('click', e => {
+                e.stopPropagation();
+                const open = dropMenu.classList.toggle('active');
+                dropBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            });
+            document.addEventListener('click', () => {
+                dropMenu.classList.remove('active');
+                dropBtn.setAttribute('aria-expanded', 'false');
+            });
+        }
+
+        document.querySelectorAll('.theme-dropdown-item').forEach(item => {
+            item.addEventListener('click', () => {
+                applyTheme(item.dataset.theme);
+                if (dropMenu) { dropMenu.classList.remove('active'); dropBtn.setAttribute('aria-expanded','false'); }
+                try { localStorage.setItem('theme', item.dataset.theme); } catch(e) {}
+            });
+        });
+
+        if (window.matchMedia) {
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+                try { if ((localStorage.getItem('theme') || 'auto') === 'auto') applyTheme('auto'); } catch(e) {}
+            });
+        }
+
+        try { applyTheme(localStorage.getItem('theme') || 'auto'); } catch(e) { applyTheme('auto'); }
+</script>
 </body>
 </html>
