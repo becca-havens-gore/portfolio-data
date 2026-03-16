@@ -38,6 +38,17 @@
             --color-text-tertiary: #888888;
             --color-border: rgba(255,255,255,0.12);
         }
+        [data-theme="high-contrast"] {
+            --color-bg-primary: #000000;
+            --color-bg-secondary: #000000;
+            --color-bg-tertiary: #1A1A1A;
+            --color-text-primary: #FFFFFF;
+            --color-text-secondary: #FFFFFF;
+            --color-text-tertiary: #E0E0E0;
+            --color-accent: #FFD700;
+            --color-accent-hover: #FFC700;
+            --color-border: #FFFFFF;
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body {
@@ -49,32 +60,110 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        .case-header-bar {
+        /* Header */
+        .header {
             position: sticky;
             top: 0;
             z-index: 100;
             background: var(--color-bg-secondary);
             border-bottom: 1px solid var(--color-border);
-            padding: 16px 32px;
+            padding: var(--space-md) var(--space-lg);
+            transition: all var(--transition-fast);
+            backdrop-filter: blur(10px);
+        }
+        .header__container {
+            max-width: 1440px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header__logo {
+            font-family: var(--font-display);
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            text-decoration: none;
+            letter-spacing: -0.02em;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            gap: 10px;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
-        .back-link { color: var(--color-accent); text-decoration: none; font-weight: 600; font-size: 15px; }
-        .back-link:hover { text-decoration: underline; }
-        .theme-controls { display: flex; gap: 8px; }
-        .theme-btn {
-            padding: 6px 14px;
-            border: 1px solid var(--color-border);
-            border-radius: 20px;
-            background: transparent;
+        .header__nav { display: flex; align-items: center; gap: 16px; }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             color: var(--color-text-secondary);
-            font-size: 13px;
-            cursor: pointer;
-            font-family: var(--font-body);
-            transition: all var(--transition-fast);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color var(--transition-fast);
+            white-space: nowrap;
         }
-        .theme-btn.active, .theme-btn:hover { background: var(--color-accent); color: white; border-color: var(--color-accent); }
+        .back-link:hover { color: var(--color-accent); }
+        .theme-controls {
+            display: flex; align-items: center;
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(0,0,0,0.12); border-radius: 12px; padding: 4px;
+        }
+        .theme-btn {
+            background: transparent; border: none; padding: 7px 11px; border-radius: 8px;
+            cursor: pointer; color: var(--color-text-primary); font-size: 12px; font-weight: 600;
+            transition: all 200ms ease; display: flex; align-items: center; gap: 5px;
+            white-space: nowrap; font-family: inherit;
+        }
+        .theme-btn svg { width: 15px; height: 15px; fill: currentColor; }
+        .theme-btn:hover { color: var(--color-accent); }
+        .theme-btn.active { background: rgba(255,107,43,0.12); color: var(--color-accent); box-shadow: 0 2px 8px rgba(255,107,43,0.2); }
+        [data-theme="dark"] .theme-controls { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); }
+        [data-theme="dark"] .theme-btn { color: #bbb; }
+        [data-theme="dark"] .theme-btn.active { background: rgba(255,255,255,0.1); color: var(--color-accent); }
+        :root:not([data-theme="dark"]):not([data-theme="high-contrast"]) .theme-controls { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.12); box-shadow: 0 6px 18px rgba(0,0,0,0.08); }
+        :root:not([data-theme="dark"]):not([data-theme="high-contrast"]) .theme-btn { color: #1A1A1A; opacity: 1; }
+        :root:not([data-theme="dark"]):not([data-theme="high-contrast"]) .theme-btn.active { background: rgba(0,0,0,0.08); color: #1A1A1A; opacity: 1; box-shadow: none; }
+        [data-theme="high-contrast"] .header { background: #000 !important; border-bottom: 2px solid #FFF !important; backdrop-filter: none; }
+        [data-theme="high-contrast"] .header__logo { color: #FFF !important; }
+        [data-theme="high-contrast"] .back-link { color: #FFD700 !important; }
+        [data-theme="high-contrast"] .theme-controls { background: #111; border: 2px solid #FFF; box-shadow: none; backdrop-filter: none; }
+        [data-theme="high-contrast"] .theme-btn { color: #EEE; border: 1px solid #555; border-radius: 6px; }
+        [data-theme="high-contrast"] .theme-btn:hover { border-color: #FFD700; color: #FFD700; }
+        [data-theme="high-contrast"] .theme-btn.active { background: #FFD700; color: #000; border-color: #FFD700; }
+        /* Theme Dropdown (medium screens) */
+        .theme-dropdown { display: none; position: relative; }
+        .theme-dropdown-button {
+            background: rgba(0,0,0,0.05); backdrop-filter: blur(20px);
+            border: 1px solid rgba(0,0,0,0.15); border-radius: 10px;
+            padding: 7px 12px; cursor: pointer; color: var(--color-text-secondary);
+            font-size: 12px; font-weight: 600; display: flex; align-items: center;
+            gap: 6px; font-family: inherit; transition: all 200ms ease;
+        }
+        .theme-dropdown-button svg { width: 15px; height: 15px; fill: currentColor; }
+        .theme-dropdown-menu {
+            display: none; position: absolute; top: calc(100% + 8px); right: 0;
+            background: var(--color-bg-secondary); border: 1px solid var(--color-border);
+            border-radius: 12px; padding: 6px; min-width: 160px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15); z-index: 1001;
+        }
+        .theme-dropdown-menu.active { display: block; }
+        .theme-dropdown-item {
+            display: flex; align-items: center; gap: 8px; padding: 8px 10px;
+            border-radius: 8px; cursor: pointer; color: var(--color-text-secondary);
+            font-size: 13px; font-weight: 600; border: none; background: transparent;
+            width: 100%; text-align: left; font-family: inherit; transition: all 150ms ease;
+        }
+        .theme-dropdown-item svg { width: 15px; height: 15px; fill: currentColor; }
+        .theme-dropdown-item:hover { background: rgba(255,107,43,0.1); color: var(--color-accent); }
+        .theme-dropdown-item.active { color: var(--color-accent); background: rgba(255,107,43,0.08); }
+        :root:not([data-theme="dark"]):not([data-theme="high-contrast"]) .theme-dropdown-button { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.12); color: var(--color-text-primary); }
+        [data-theme="high-contrast"] .theme-dropdown-button { background: #111; border: 2px solid #FFF; color: #EEE; backdrop-filter: none; }
+        [data-theme="high-contrast"] .theme-dropdown-menu { background: #000; border: 2px solid #FFF; }
+        [data-theme="high-contrast"] .theme-dropdown-item { color: #EEE; }
+        [data-theme="high-contrast"] .theme-dropdown-item:hover { color: #FFD700; background: #1a1a1a; }
+        [data-theme="high-contrast"] .theme-dropdown-item.active { color: #FFD700; background: #2a1a00; }
+        @media (max-width: 860px) { .theme-controls { display: none; } .theme-dropdown { display: block; } }
 
         .case-hero {
             background: linear-gradient(135deg, #1a1a0a 0%, #3d2b00 40%, #1a0a0a 100%);
@@ -646,16 +735,7 @@
             </nav>
         </div>
     </header>
-
-<a href="#main-content" class="skip-link">Skip to main content</a>
-<header class="case-header-bar">
-        <a href="index-netflix.html#work" class="back-link">&larr; Back to Portfolio</a>
-        <div class="theme-controls">
-            <button class="theme-btn active" data-theme="light">Light</button>
-            <button class="theme-btn" data-theme="dark">Dark</button>
-        </div>
-    </header>
-
+    <main id="main-content" tabindex="-1">
     <section class="case-hero">
         <div class="case-hero__content">
             <p class="case-hero__eyebrow">Case Study &mdash; AI-Augmented Workflows</p>
@@ -923,11 +1003,12 @@
     </article>
 
     <nav class="case-nav-footer">
-        <a href="case-study-dvs-netflix.html">&larr; Previous: Observability &amp; Data Visualization</a>
+        <a href="case-study-dvs.html">&larr; Previous: Observability &amp; Data Visualization</a>
         &nbsp;&nbsp;&bull;&nbsp;&nbsp;
-        <a href="index-netflix.html#work">Back to all case studies &rarr;</a>
+        <a href="index.html#work">Back to all case studies &rarr;</a>
     </nav>
 
+    </main>
     <script>
 (function () {
   const root = document.documentElement;
@@ -1057,109 +1138,14 @@
     navMenu.setAttribute('inert', '');
     overlay.setAttribute('aria-hidden', 'true');
   }
+  const header = document.querySelector('.header');
+  if (header) {
+    window.addEventListener('scroll', () => {
+      header.classList.toggle('scrolled', window.pageYOffset > 0);
+    });
+  }
 })();
 </script>
-<script>
-// ── Theme System ──
-        const html = document.documentElement;
-        const themeNames = { auto: 'Auto', light: 'Light', dark: 'Dark', 'high-contrast': 'Contrast' };
-
-        function getSystemTheme() {
-            return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        }
-
-        function applyTheme(pref) {
-            const actual = pref === 'auto' ? getSystemTheme() : pref;
-            html.setAttribute('data-theme', actual);
-
-            document.querySelectorAll('.theme-btn').forEach(btn => {
-                const active = btn.dataset.theme === pref;
-                btn.classList.toggle('active', active);
-                btn.setAttribute('aria-pressed', active ? 'true' : 'false');
-            });
-            document.querySelectorAll('.theme-dropdown-item').forEach(item => {
-                item.classList.toggle('active', item.dataset.theme === pref);
-            });
-            const label = document.querySelector('.theme-dropdown-label');
-            if (label) label.textContent = themeNames[pref] || 'Auto';
-        }
-
-        document.querySelectorAll('.theme-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                applyTheme(btn.dataset.theme);
-                try { localStorage.setItem('theme', btn.dataset.theme); } catch(e) {}
-            });
-        });
-
-        const dropBtn = document.querySelector('.theme-dropdown-button');
-        const dropMenu = document.querySelector('.theme-dropdown-menu');
-        if (dropBtn && dropMenu) {
-            dropBtn.addEventListener('click', e => {
-                e.stopPropagation();
-                const open = dropMenu.classList.toggle('active');
-                dropBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
-            });
-            document.addEventListener('click', () => {
-                dropMenu.classList.remove('active');
-                dropBtn.setAttribute('aria-expanded', 'false');
-            });
-        }
-
-        document.querySelectorAll('.theme-dropdown-item').forEach(item => {
-            item.addEventListener('click', () => {
-                applyTheme(item.dataset.theme);
-                if (dropMenu) { dropMenu.classList.remove('active'); dropBtn.setAttribute('aria-expanded','false'); }
-                try { localStorage.setItem('theme', item.dataset.theme); } catch(e) {}
-            });
-        });
-
-        if (window.matchMedia) {
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-                try { if ((localStorage.getItem('theme') || 'auto') === 'auto') applyTheme('auto'); } catch(e) {}
-            });
-        }
-
-        try { applyTheme(localStorage.getItem('theme') || 'auto'); } catch(e) { applyTheme('auto'); }
-</script>
-<script>
-        (function() {
-            var html = document.documentElement;
-            var lbls = { auto:"Auto", light:"Light", dark:"Dark", "high-contrast":"Contrast" };
-            function sys() { return (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light"; }
-            function apply(pref) {
-                html.setAttribute("data-theme", pref === "auto" ? sys() : pref);
-                document.querySelectorAll(".theme-btn").forEach(function(b) {
-                    var on = b.dataset.theme === pref;
-                    b.classList.toggle("active", on);
-                    b.setAttribute("aria-pressed", on ? "true" : "false");
-                });
-                document.querySelectorAll(".theme-dropdown-item").forEach(function(i) { i.classList.toggle("active", i.dataset.theme === pref); });
-                var l = document.querySelector(".theme-dropdown-label");
-                if (l) l.textContent = lbls[pref] || "Auto";
-            }
-            document.querySelectorAll(".theme-btn").forEach(function(b) {
-                b.addEventListener("click", function() { apply(b.dataset.theme); try { localStorage.setItem("theme", b.dataset.theme); } catch(e){} });
-            });
-            var db = document.querySelector(".theme-dropdown-button");
-            var dm = document.querySelector(".theme-dropdown-menu");
-            if (db && dm) {
-                db.addEventListener("click", function(e) { e.stopPropagation(); var open = dm.classList.toggle("open"); db.setAttribute("aria-expanded", open ? "true" : "false"); });
-                document.addEventListener("click", function() { dm.classList.remove("open"); if(db) db.setAttribute("aria-expanded","false"); });
-            }
-            document.querySelectorAll(".theme-dropdown-item").forEach(function(i) {
-                i.addEventListener("click", function() {
-                    apply(i.dataset.theme);
-                    try { localStorage.setItem("theme", i.dataset.theme); } catch(e){}
-                    if (dm) dm.classList.remove("open"); if (db) db.setAttribute("aria-expanded","false");
-                });
-            });
-            if (window.matchMedia) window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function() {
-                try { if ((localStorage.getItem("theme") || "auto") === "auto") apply("auto"); } catch(e){} });
-            try { apply(localStorage.getItem("theme") || "auto"); } catch(e) { apply("auto"); }
-        })();
-        var hdr = document.querySelector(".header");
-        if (hdr) window.addEventListener("scroll", function() { hdr.classList.toggle("scrolled", window.pageYOffset > 0); });
-    </script>
     <script>
         /* Outcomes Gallery Theme Switcher */
         (function() {
