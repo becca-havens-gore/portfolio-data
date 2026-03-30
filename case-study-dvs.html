@@ -319,12 +319,18 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--color-accent);outli
   border:1px solid var(--color-border);
   border-radius:14px;overflow:hidden;margin:var(--space-md) 0 var(--space-lg);
 }
+.figure__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
 .figure__media{
   aspect-ratio:16/9;display:grid;place-items:center;
   background:linear-gradient(135deg,rgba(var(--color-accent-rgb),.08),rgba(var(--color-accent-rgb),.03));
   color:var(--color-text-tertiary);
   font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
-  padding:var(--space-md);text-align:center;position:relative;
+  padding:0;text-align:center;position:relative;
 }
 .figure__media::before{
   content:'';position:absolute;inset:0;
@@ -720,13 +726,12 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--color-accent);outli
         
         <figure class="figure">
             <div class="figure__media">
-                <svg class="figure__media-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-                    <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
-                    <path d="m21 15-5-5L5 21"/>
-                </svg>
-                Current-state dashboard comparison across product areas
+              <img srcset="assets/images/case-studies/dvs/dvs-figure-1-768w.avif 768w, assets/images/case-studies/dvs/dvs-figure-1-1200w.avif 1200w, assets/images/case-studies/dvs/dvs-figure-1-1536w.avif 1536w"
+                 sizes="(max-width: 900px) 100vw, 900px"
+                 alt="Comparison of legacy dashboards across multiple security products, highlighting inconsistent chart paradigms and filter UIs."
+                 style="width: 100%; height: auto; object-fit: cover; display: block;">
             </div>
-            <figcaption class="figure__caption">Suggested: 3–4 redacted screenshots showing inconsistent chart paradigms, varied filter UIs, and different drill-in patterns across InsightIDR, InsightVM, and InsightOps.</figcaption>
+            <figcaption class="figure__caption">Legacy dashboards across products: inconsistent chart paradigms and filter UIs made cross-product analysis slow and error-prone. Unifying these patterns was the foundation for DVS.</figcaption>
         </figure>
         </section>
 
@@ -799,7 +804,15 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--color-accent);outli
                 <li><strong>Cross-product linking:</strong> Signals from one product could link into investigation workflows in another &mdash; e.g., a vulnerability finding in InsightVM linking to detection data in InsightIDR.</li>
                 <li><strong>Progressive disclosure:</strong> Aggregate metrics on the surface, details on demand. Never overwhelming the analyst with all the data at once.</li>
             </ul>
-
+            <figure class="figure">
+                <div class="figure__media">
+                  <img srcset="assets/images/case-studies/dvs/dvs-figure-2-768w.avif 768w, assets/images/case-studies/dvs/dvs-figure-2-1200w.avif 1200w, assets/images/case-studies/dvs/dvs-figure-2-1536w.avif 1536w"
+                     sizes="(max-width: 900px) 100vw, 900px"
+                     alt="System diagram showing the three-layer DVS architecture: Telemetry Foundations, Card System, and Dashboard Templates."
+                     style="width: 100%; height: auto; object-fit: cover; display: block;">
+                </div>
+                <figcaption class="figure__caption">DVS architecture: three interoperable layers (foundations, card system, templates) enabled scalable, accessible, and consistent dashboards across six enterprise products.</figcaption>
+            </figure>
             <div class="callout">
                 <p>"This is the first time I can read dashboards the same way across the platform."</p>
                 <p class="callout__attribution">&mdash; Senior Security Analyst, post-launch research</p>
@@ -817,13 +830,12 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--color-accent);outli
         
         <figure class="figure">
             <div class="figure__media">
-                <svg class="figure__media-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-                    <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
-                    <path d="m21 15-5-5L5 21"/>
-                </svg>
-                DVS three-layer architecture — Foundations → Card System → Templates
+              <img srcset="assets/images/case-studies/dvs/dvs-figure-3-768w.avif 768w, assets/images/case-studies/dvs/dvs-figure-3-1200w.avif 1200w, assets/images/case-studies/dvs/dvs-figure-3-1536w.avif 1536w"
+                 sizes="(max-width: 900px) 100vw, 900px"
+                 alt="Unified filtering and dashboard UI across products, showing consistent filter panels and query construction."
+                 style="width: 100%; height: auto; object-fit: cover; display: block;">
             </div>
-            <figcaption class="figure__caption">Suggested: annotated system diagram showing the three layers with component examples and how they compose into dashboards.</figcaption>
+            <figcaption class="figure__caption">Unified filtering and dashboard UI: standardized filter panels and query construction enabled analysts to move seamlessly between products and reduced cognitive load.</figcaption>
         </figure>
         </section>
 
@@ -913,13 +925,12 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--color-accent);outli
         
         <figure class="figure">
             <div class="figure__media">
-                <svg class="figure__media-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-                    <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
-                    <path d="m21 15-5-5L5 21"/>
-                </svg>
-                Before / after: investigation time comparison
+              <img srcset="assets/images/case-studies/dvs/dvs-figure-4-768w.avif 768w, assets/images/case-studies/dvs/dvs-figure-4-1200w.avif 1200w, assets/images/case-studies/dvs/dvs-figure-4-1536w.avif 1536w"
+                 sizes="(max-width: 900px) 100vw, 900px"
+                 alt="Before and after comparison of investigation time, showing improved workflow and reduced time to root cause after DVS adoption."
+                 style="width: 100%; height: auto; object-fit: cover; display: block;">
             </div>
-            <figcaption class="figure__caption">Suggested: redacted session recording analysis or annotated flow showing the path from alert to root cause before and after DVS adoption.</figcaption>
+            <figcaption class="figure__caption">Impact: DVS reduced investigation time by standardizing workflows and surfacing actionable signals, enabling analysts to resolve incidents faster and with greater confidence.</figcaption>
         </figure>
         </section>
 
