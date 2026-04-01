@@ -324,13 +324,21 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--color-accent);outli
   background:linear-gradient(135deg,rgba(var(--color-accent-rgb),.08),rgba(var(--color-accent-rgb),.03));
   color:var(--color-text-tertiary);
   font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
-  padding:var(--space-md);text-align:center;position:relative;
+  padding: 0;text-align:center;position:relative;
+  border:1px solid var(--color-border);
+  border-radius:14px;
 }
 .figure__media img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+}
+.figure__media video {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  padding: 0;
 }
 .figure__media::before{
   content:'';position:absolute;inset:0;
@@ -676,8 +684,22 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--color-accent);outli
           <p class="callout__attribution">— MDR SOC analyst</p>
         </div>
         <figure class="figure">
-          <div class="figure__media">Add image: current-state montage (redacted)</div>
-          <figcaption class="figure__caption">Suggested: 3–5 redacted screenshots showing inconsistency and time-wasting patterns across alert types.</figcaption>
+          <div class="figure__media figure__media--video">
+            <video
+              autoplay
+              muted
+              loop
+              playsinline
+              preload="metadata"
+              poster="assets/images/case-studies/alerts/alerts-before-poster.jpg"
+              aria-label="Animation showing the previous Alerts triage experience with dense controls, high scanning effort, and fragmented workflow.">
+              <source src="assets/images/case-studies/alerts/alerts-before-optimized.webm" type="video/webm" />
+              <img src="assets/images/case-studies/alerts/alerts-before-poster.jpg" alt="Static image showing the previous Alerts triage experience with dense controls, high scanning effort, and fragmented workflow." />
+            </video>
+          </div>
+          <figcaption class="figure__caption">
+            Before redesign: The alert triage interface was cluttered and inefficient, leading to slower response times and reduced analyst confidence.
+          </figcaption>
         </figure>
       </section>
 
@@ -733,8 +755,15 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--color-accent);outli
           <li><strong>Smart defaults + customization:</strong> optimize for user personalization without chaos.</li>
         </ul>
         <figure class="figure">
-          <div class="figure__media">Add image: flow storyboard (redacted)</div>
-          <figcaption class="figure__caption">Suggested: a 5-step storyboard that mirrors observability workflows (detect → scope → drill → correlate → act).</figcaption>
+          <div class="figure__media">
+            <img srcset="assets/images/case-studies/alerts/alerts-figure-2-768w.avif 768w, assets/images/case-studies/alerts/alerts-figure-2-1200w.avif 1200w, assets/images/case-studies/alerts/alerts-figure-2-1536w.avif 1536w"
+                 sizes="(max-width: 768px) 768px, (max-width: 1200px) 1200px, 1536px"
+                 src="assets/images/case-studies/alerts/alerts-figure-2-1200w.avif"
+                 alt="A 5-step workflow diagram illustrating the alert triage process: detect incoming alerts, scope the initial impact, drill into evidence details, correlate with related data, and act with resolution or escalation." />
+          </div>
+          <figcaption class="figure__caption">
+            After redesign: The alert triage interface is modular, efficient, and supports first action in seconds.
+          </figcaption>
         </figure>
       </section>
 
@@ -747,8 +776,13 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--color-accent);outli
           The result was a predictable details framework where different alert types can plug into the same investigation “grammar.”
         </p>
         <figure class="figure">
-          <div class="figure__media">Add image: details anatomy / section contract</div>
-          <figcaption class="figure__caption">Suggested: annotated “panel anatomy” showing key sections (summary, evidence, related entities) plus lazy-load rules.</figcaption>
+          <div class="figure__media">
+            <img srcset="assets/images/case-studies/alerts/alerts-figure-3-768w.avif 768w, assets/images/case-studies/alerts/alerts-figure-3-1200w.avif 1200w, assets/images/case-studies/alerts/alerts-figure-3-1536w.avif 1536w"
+                 sizes="(max-width: 768px) 768px, (max-width: 1200px) 1200px, 1536px"
+                 src="assets/images/case-studies/alerts/alerts-figure-3-1200w.avif"
+                 alt="Annotated diagram of the modular alert details panel showing key sections: summary with priority and status, evidence blocks with expandable details, related entities with correlation links, and lazy-loading indicators for performance optimization." />
+          </div>
+          <figcaption class="figure__caption">Modular alert details framework: annotated panel anatomy showing standardized sections (summary, evidence, entities) with progressive disclosure and lazy-loading rules to balance information density with performance constraints.</figcaption>
         </figure>
       </section>
 
@@ -790,8 +824,13 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--color-accent);outli
           <li><strong>Handoff quality:</strong> fewer reopen/reassign loops due to missing context.</li>
         </ul>
         <figure class="figure">
-          <div class="figure__media">Add image: metrics snapshot (redacted)</div>
-          <figcaption class="figure__caption">Suggested: a redacted scorecard/metrics snapshot from the Alerts deck.</figcaption>
+          <div class="figure__media">
+            <img srcset="assets/images/case-studies/alerts/alerts-figure-4-768w.avif 768w, assets/images/case-studies/alerts/alerts-figure-4-1200w.avif 1200w, assets/images/case-studies/alerts/alerts-figure-4-1536w.avif 1536w"
+                 sizes="(max-width: 768px) 768px, (max-width: 1200px) 1200px, 1536px"
+                 src="assets/images/case-studies/alerts/alerts-figure-4-1200w.avif"
+                 alt="Redacted metrics dashboard showing key performance indicators for the alert triage redesign, including time-to-assessment improvements, effort reduction percentages, and workflow efficiency gains." />
+          </div>
+          <figcaption class="figure__caption">Performance metrics snapshot: redacted scorecard demonstrating the impact of the modular triage system on assessment speed, analyst effort, and workflow efficiency across high-volume alert scenarios.</figcaption>
         </figure>
       </section>
 
@@ -814,8 +853,15 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--color-accent);outli
           <li><strong>Platform leverage:</strong> reusable patterns sped delivery across alert types.</li>
         </ul>
         <figure class="figure">
-          <div class="figure__media">Add image: final list + details (redacted)</div>
-          <figcaption class="figure__caption">Suggested: outcome screenshot showing list + details + key actions and evidence sections.</figcaption>
+          <div class="figure__media">
+            <img srcset="assets/images/case-studies/alerts/alerts-figure-5-768w.avif 768w, assets/images/case-studies/alerts/alerts-figure-5-1200w.avif 1200w, assets/images/case-studies/alerts/alerts-figure-5-1536w.avif 1536w"
+                 sizes="(max-width: 768px) 768px, (max-width: 1200px) 1200px, 1536px"
+                 src="assets/images/case-studies/alerts/alerts-figure-5-1200w.avif"
+                 alt="Redacted screenshot of the redesigned alerts interface showing the list view with summary cards, expanded details panel with evidence sections, and prominent action buttons for bulk operations and resolution." />
+          </div>
+          <figcaption class="figure__caption">
+            Redesigned workflow: A modular and efficient alert triage system enabling analysts to act quickly and confidently.
+          </figcaption>
         </figure>
       </section>
 
